@@ -1,0 +1,32 @@
+{{#each schemas as |schema key|}}
+
+type {{key}} {
+  {{#each schema.properties as |property propKey|}}
+    {{propKey}}: {{property.type}}
+  {{/each}}
+}
+
+# Queries
+
+type Query {
+  get{{key}}List: [{{key}}!]!
+  get{{key}}(id: ID!): {{key}}
+}
+
+# Mutations
+
+type Mutation {
+  create{{key}}(input: {{key}}Input!): {{key}}!
+  update{{key}}(id: ID!, input: {{key}}Input!): {{key}}!
+  delete{{key}}(id: ID!): Boolean!
+}
+
+# Input Types
+
+input {{key}}Input {
+  {{#each schema.properties as |property propKey|}}
+    {{propKey}}: {{property.type}}
+  {{/each}}
+}
+
+{{/each}}

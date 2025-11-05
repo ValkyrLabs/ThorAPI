@@ -1,0 +1,43 @@
+# Test profile for ThorAPI module
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:thorapi_test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;NON_KEYWORDS=USER
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+    hikari:
+      register-mbeans: true
+      minimum-idle: 2
+      maximum-pool-size: 10
+      pool-name: HikariCP-ThorAPI-Test
+  jpa:
+    show-sql: false
+    open-in-view: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        generate_statistics: false
+        format_sql: false
+  sql:
+    init:
+      mode: never
+  liquibase:
+    enabled: false
+
+springdoc:
+  api-docs:
+    path: /v1/api-docs
+  swagger-ui:
+    path: /v1/swagger-ui.html
+
+jwt:
+  secret: yhlccwCCoXCYM/tffmi0b+WxkEt6tkNFfHsW7CNIm60=
+
+logging:
+  level:
+    root: WARN
+    com.valkyrlabs.thorapi.config.impl.ValkyrACL: OFF

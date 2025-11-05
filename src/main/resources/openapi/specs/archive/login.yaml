@@ -1,0 +1,67 @@
+
+  /Login:
+    tags: [Login]
+    summary: Login a User
+    description: Login for an existing system User.
+    operationId: loginUser
+    requestBody:
+      description: User login request.
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Login'}
+    responses:
+      '200':
+        description: User logged in successfully.
+        headers:
+          X-Rate-Limit:
+            description: calls per hour allowed by the user
+            schema:
+              type: integer
+              format: int32
+          X-Expires-After:
+            description: date in UTC when token expires
+            schema:
+              type: string
+              format: date-time
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/User'}
+      '400': {description: Invalid. Failed attempt has been logged.}
+      '404': {description: User not found.}
+      '500': {description: Internal server error.}
+
+  /Signup:
+    post:
+      tags: [User]
+      summary: Create a new User
+      description: Signup and creates new User - similar to createUser see ValkyrAI docs for more information.
+      operationId: signupUser
+      requestBody:
+        description: User details.
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/User'}
+      responses:
+        '201':
+          description: User created successfully.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/User'}
+        '400': {description: Invalid input.}
+        '404': {description: User not found.}
+        '500': {description: Internal server error.}
+
+  /Logout:
+    put:
+      tags: [User]
+      summary: Logout the session User
+      description: Logs out the currently logged in user, clears any session-cached data, resets state.
+      operationId: logoutUser
+      responses:
+        '200':
+          description: Currently logged-in session User logged out successfully.
+        '400': {description: Invalid input.}
+        '404': {description: User not found.}
+        '500': {description: Internal server error.}

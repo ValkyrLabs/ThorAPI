@@ -1,0 +1,100 @@
+files:
+
+  pom.mustache:
+    templateType: SupportingFiles
+    folder: /
+    destinationFilename: pom.xml
+  
+  #log4j2.xml.mustache:
+  #  templateType: SupportingFiles
+  #  folder: /src/main/resources
+  #  destinationFilename: log4j2.xml
+
+  api_doc.mustache:
+    templateType: API
+    folder: src/main/docs/api
+    destinationFilename: Doc.md
+  
+  model_doc.mustache:
+    templateType: Model
+    folder: src/main/docs/model
+    destinationFilename: Doc.md
+  
+  # apiTest.mustache:
+  #   templateType: API
+  #  folder: src/test/java
+  #  destinationFilename: Test.java
+
+  # modelTest.mustache:
+  #   templateType: Model
+  #   folder: src/test/java
+  #   destinationFilename: Test.java
+
+  service.mustache:
+    templateType: Model
+    destinationFilename: Service.java
+
+  application.mustache:
+    templateType: SupportingFiles
+    folder: src/main/resources
+    destinationFilename: application.properties
+
+  applicationProperties.mustache:
+    templateType: SupportingFiles
+    folder: src/main/resources
+    destinationFilename: application.yaml
+
+  testApplicationProperties.mustache:
+    templateType: SupportingFiles
+    folder: src/test/resources
+    destinationFilename: application.yaml
+
+  banner.mustache:
+    templateType: SupportingFiles
+    folder: src/main/resources/
+    destinationFilename: banner.txt
+
+  thorGrantedAuthority.mustache:
+    templateType: SupportingFiles
+    folder: src/main/java/com/valkyrlabs/api/
+    destinationFilename: ThorGrantedAuthority.java    
+
+  dataObject.mustache:
+    templateType: SupportingFiles
+    folder: src/main/java/com/valkyrlabs/model/
+    destinationFilename: DataObject.java
+
+# causes dupes w/ThorAPI 
+  thorUser.mustache:
+    templateType: SupportingFiles
+    folder: src/main/java/com/valkyrlabs/model/
+    destinationFilename: ThorUser.java
+
+  ThorApplication.mustache:
+    templateType: SupportingFiles
+    folder: src/main/java/com/valkyrlabs/api/
+    destinationFilename: ThorApplication.java  
+
+  OpenApiGeneratorApplication.mustache:
+    templateType: SupportingFiles
+    folder: src/main/java/org/openapitools/
+    destinationFilename: OpenApiGeneratorApplication.java
+  
+  OpenApiGeneratorApplicationTests.mustache:
+    templateType: SupportingFiles
+    folder: src/test/java/org/openapitools/
+    destinationFilename: OpenApiGeneratorApplicationTests.java
+
+  readme.md.mustache:
+    templateType: SupportingFiles
+    destinationFilename: README.md
+
+  pageableRepository.mustache:
+    templateType: Model
+    folder: src/main/java/com/valkyrlabs/api/
+    destinationFilename: PageableRepository.java
+
+  repository.mustache:
+    templateType: Model
+    folder: src/main/java/com/valkyrlabs/api/
+    destinationFilename: Repository.java

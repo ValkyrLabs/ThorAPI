@@ -1,0 +1,11 @@
+<cache alias="aclCache">
+    <key-type>java.io.Serializable</key-type>
+    <value-type>org.springframework.security.acls.model.MutableAcl</value-type>
+    <expiry>
+        <ttl unit="seconds">3600</ttl>
+    </expiry>
+    <resources>
+        <heap unit="entries">2000</heap>
+        <offheap unit="MB">10</offheap>
+    </resources>
+</cache>

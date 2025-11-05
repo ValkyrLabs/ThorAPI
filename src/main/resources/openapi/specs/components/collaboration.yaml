@@ -1,0 +1,19 @@
+Collaboration:
+  type: object
+  properties:
+    id:
+      type: string
+    startTime:
+      type: string
+      format: date-time
+    endTime:
+      type: string
+      format: date-time
+    participants:
+      type: array
+      items:
+        $ref: './user.yaml#/User'
+    audioFiles:
+      type: array
+      items:
+        $ref: './audio.yaml#/Audio'

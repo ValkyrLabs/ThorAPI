@@ -1,0 +1,77 @@
+{{>additionalOneOfTypeAnnotations}}
+{{#withXml}}
+{{>xmlAnnotation}}
+{{/withXml}}
+{{#discriminator}}
+{{>typeInfoAnnotation}}
+{{/discriminator}}
+{{>generatedAnnotation}}
+
+// THORAPI
+
+// TODO: this wants to be a fully fleshed out interface
+// representing only the common columns of a collection of objects
+// so objectively it should only work with sub-classes
+// this interface will then allow holding of base class containers
+
+// @Entity
+public {{>sealed}}interface {{classname}}{{#vendorExtensions.x-implements}}{{#-first}} extends {{{.}}}{{/-first}}{{^-first}}, {{{.}}}{{/-first}}{{/vendorExtensions.x-implements}} {{>permits}}{
+    
+    // the following is required for Spring jpa
+
+    
+    {{#discriminator}}
+    public {{propertyType}} {{propertyGetter}}();
+    {{/discriminator}}
+    
+    {{#models}}
+{{#model}}
+
+
+    {{#allVars}}
+
+    {{#isEnum}}
+    
+/*
+    public enum {{{datatypeWithEnum}}} {
+      TYPE1,
+      TYPE2,
+      TYPE3;
+
+      @JsonValue
+      public String toValue() {
+        switch (this) {
+          case TYPE1: return "Type1";
+          case TYPE2: return "Type2";
+          case TYPE3: return "Type3";
+          default: throw new IllegalArgumentException();
+        }
+      }
+
+      @JsonCreator
+      public static {{{datatypeWithEnum}}} forValue(String value) {
+        switch (value) {
+          case "Type1": return TYPE1;
+          case "Type2": return TYPE2;
+          case "Type3": return TYPE3;
+          default: throw new IllegalArgumentException();
+        }
+      }
+    }
+
+
+    enum {{datatype}} {
+        {{#.}}
+        {{{datatypeWithEnum}}}
+        {{/.}}
+    }
+    
+    */
+    
+    {{/isEnum}}
+    {{/allVars}}
+
+
+{{/model}}
+        {{/models}}
+}

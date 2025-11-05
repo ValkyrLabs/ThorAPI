@@ -1,0 +1,192 @@
+openapi: 3.0.3
+info:
+  title: AutoGPT Agent Server
+  version: "0.1"
+components:
+  schemas:
+    AgentGraph:
+      type: object
+      properties:
+        id:
+          type: string
+        version:
+          type: integer
+          default: 1
+        name:
+          type: string
+        description:
+          type: string
+        isActive:
+          type: boolean
+          default: true
+        isTemplate:
+          type: boolean
+          default: false
+      required:
+        - id
+        - version
+        - isActive
+        - isTemplate
+
+    AgentBlock:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        inputSchema:
+          type: string
+        outputSchema:
+          type: string
+      required:
+        - id
+        - name
+        - inputSchema
+        - outputSchema
+
+    AgentNode:
+      type: object
+      properties:
+        id:
+          type: string
+        agentBlockId:
+          type: string
+        agentGraphId:
+          type: string
+        agentGraphVersion:
+          type: integer
+          default: 1
+        constantInput:
+          type: string
+          default: '{}'
+        metadata:
+          type: string
+          default: '{}'
+      required:
+        - id
+        - agentBlockId
+        - agentGraphId
+        - agentGraphVersion
+        - constantInput
+        - metadata
+
+    AgentNodeLink:
+      type: object
+      properties:
+        id:
+          type: string
+        agentNodeSourceId:
+          type: string
+        sourceName:
+          type: string
+        agentNodeSinkId:
+          type: string
+        sinkName:
+          type: string
+      required:
+        - id
+        - agentNodeSourceId
+        - sourceName
+        - agentNodeSinkId
+        - sinkName
+
+    AgentGraphExecution:
+      type: object
+      properties:
+        id:
+          type: string
+        agentGraphId:
+          type: string
+        agentGraphVersion:
+          type: integer
+          default: 1
+      required:
+        - id
+        - agentGraphId
+        - agentGraphVersion
+
+    AgentNodeExecution:
+      type: object
+      properties:
+        id:
+          type: string
+        agentGraphExecutionId:
+          type: string
+        agentNodeId:
+          type: string
+        executionStatus:
+          type: string
+        addedTime:
+          type: string
+          format: date-time
+          default: 'CURRENT_TIMESTAMP'
+        queuedTime:
+          type: string
+          format: date-time
+        startedTime:
+          type: string
+          format: date-time
+        endedTime:
+          type: string
+          format: date-time
+      required:
+        - id
+        - agentGraphExecutionId
+        - agentNodeId
+        - executionStatus
+        - addedTime
+
+    AgentNodeExecutionInputOutput:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        data:
+          type: string
+        time:
+          type: string
+          format: date-time
+          default: 'CURRENT_TIMESTAMP'
+        referencedByInputExecId:
+          type: string
+          nullable: true
+        referencedByOutputExecId:
+          type: string
+          nullable: true
+      required:
+        - id
+        - name
+        - data
+        - time
+
+    AgentGraphExecutionSchedule:
+      type: object
+      properties:
+        id:
+          type: string
+        agentGraphId:
+          type: string
+        agentGraphVersion:
+          type: integer
+          default: 1
+        schedule:
+          type: string
+        isEnabled:
+          type: boolean
+          default: true
+        inputData:
+          type: string
+        lastUpdated:
+          type: string
+          format: date-time
+      required:
+        - id
+        - agentGraphId
+        - agentGraphVersion
+        - schedule
+        - isEnabled
+        - inputData
+        - lastUpdated

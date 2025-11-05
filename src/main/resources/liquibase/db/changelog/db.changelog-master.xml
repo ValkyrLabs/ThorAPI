@@ -1,0 +1,352 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+
+    <changeSet id="create_Workflow" author="thorapi-generator">
+        <createTable tableName="Workflow">
+            <column name="id" type="char(36)">
+                <constraints primaryKey="true" nullable="false" />
+                    <defaultValueComputed>UUID()</defaultValueComputed>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+            </column>
+            <column name="modify_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                    <valueComputed>ON
+                UPDATE CURRENT_TIMESTAMP</valueComputed>
+            </column>
+            <column name="last_modified_by" type="char(36)">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_Task" author="thorapi-generator">
+        <createTable tableName="Task">
+            <column name="id" type="char(36)">
+                <constraints primaryKey="true" nullable="false" />
+                    <defaultValueComputed>UUID()</defaultValueComputed>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+            </column>
+            <column name="modify_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                    <valueComputed>ON
+                UPDATE CURRENT_TIMESTAMP</valueComputed>
+            </column>
+            <column name="last_modified_by" type="char(36)">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_ExecModule" author="thorapi-generator">
+        <createTable tableName="ExecModule">
+            <column name="id" type="char(36)">
+                <constraints primaryKey="true" nullable="false" />
+                    <defaultValueComputed>UUID()</defaultValueComputed>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+            </column>
+            <column name="modify_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                    <valueComputed>ON
+                UPDATE CURRENT_TIMESTAMP</valueComputed>
+            </column>
+            <column name="last_modified_by" type="char(36)">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_EventLog" author="thorapi-generator">
+        <createTable tableName="EventLog">
+            <column name="id" type="char(36)">
+                <constraints primaryKey="true" nullable="false" />
+                    <defaultValueComputed>UUID()</defaultValueComputed>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+            </column>
+            <column name="modify_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                    <valueComputed>ON
+                UPDATE CURRENT_TIMESTAMP</valueComputed>
+            </column>
+            <column name="last_modified_by" type="char(36)">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_ContentData" author="thorapi-generator">
+        <createTable tableName="ContentData">
+            <column name="id" type="char(36)">
+                <constraints primaryKey="true" nullable="false" />
+                    <defaultValueComputed>UUID()</defaultValueComputed>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+            </column>
+            <column name="modify_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                    <valueComputed>ON
+                UPDATE CURRENT_TIMESTAMP</valueComputed>
+            </column>
+            <column name="last_modified_by" type="char(36)">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_Rating" author="thorapi-generator">
+        <createTable tableName="Rating">
+            <column name="id" type="char(36)">
+                <constraints primaryKey="true" nullable="false" />
+                    <defaultValueComputed>UUID()</defaultValueComputed>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+            </column>
+            <column name="modify_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                    <valueComputed>ON
+                UPDATE CURRENT_TIMESTAMP</valueComputed>
+            </column>
+            <column name="last_modified_by" type="char(36)">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_ChatMessage" author="thorapi-generator">
+        <createTable tableName="ChatMessage">
+            <column name="id" type="char(36)">
+                <constraints primaryKey="true" nullable="false" />
+                    <defaultValueComputed>UUID()</defaultValueComputed>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+            </column>
+            <column name="modify_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                    <valueComputed>ON
+                UPDATE CURRENT_TIMESTAMP</valueComputed>
+            </column>
+            <column name="last_modified_by" type="char(36)">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_User" author="thorapi-generator">
+        <createTable tableName="User">
+            <column name="id" type="char(36)">
+                <constraints primaryKey="true" nullable="false" />
+                    <defaultValueComputed>UUID()</defaultValueComputed>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+            </column>
+            <column name="modify_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                    <valueComputed>ON
+                UPDATE CURRENT_TIMESTAMP</valueComputed>
+            </column>
+            <column name="last_modified_by" type="char(36)">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_Organization" author="thorapi-generator">
+        <createTable tableName="Organization">
+            <column name="id" type="char(36)">
+                <constraints primaryKey="true" nullable="false" />
+                    <defaultValueComputed>UUID()</defaultValueComputed>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+            </column>
+            <column name="modify_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                    <valueComputed>ON
+                UPDATE CURRENT_TIMESTAMP</valueComputed>
+            </column>
+            <column name="last_modified_by" type="char(36)">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_Address" author="thorapi-generator">
+        <createTable tableName="Address">
+            <column name="id" type="char(36)">
+                <constraints primaryKey="true" nullable="false" />
+                    <defaultValueComputed>UUID()</defaultValueComputed>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+            </column>
+            <column name="modify_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                    <valueComputed>ON
+                UPDATE CURRENT_TIMESTAMP</valueComputed>
+            </column>
+            <column name="last_modified_by" type="char(36)">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_Role" author="thorapi-generator">
+        <createTable tableName="Role">
+            <column name="id" type="char(36)">
+                <constraints primaryKey="true" nullable="false" />
+                    <defaultValueComputed>UUID()</defaultValueComputed>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+            </column>
+            <column name="modify_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                    <valueComputed>ON
+                UPDATE CURRENT_TIMESTAMP</valueComputed>
+            </column>
+            <column name="last_modified_by" type="char(36)">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_AclEntry" author="thorapi-generator">
+        <createTable tableName="AclEntry">
+            <column name="id" type="char(36)">
+                <constraints primaryKey="true" nullable="false" />
+                    <defaultValueComputed>UUID()</defaultValueComputed>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+            </column>
+            <column name="modify_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                    <valueComputed>ON
+                UPDATE CURRENT_TIMESTAMP</valueComputed>
+            </column>
+            <column name="last_modified_by" type="char(36)">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_ThorUXMeta" author="thorapi-generator">
+        <createTable tableName="ThorUXMeta">
+            <column name="id" type="char(36)">
+                <constraints primaryKey="true" nullable="false" />
+                    <defaultValueComputed>UUID()</defaultValueComputed>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+            </column>
+            <column name="modify_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                    <valueComputed>ON
+                UPDATE CURRENT_TIMESTAMP</valueComputed>
+            </column>
+            <column name="last_modified_by" type="char(36)">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+
+    <changeSet id="create_Login" author="thorapi-generator">
+        <createTable tableName="Login">
+            <column name="id" type="char(36)">
+                <constraints primaryKey="true" nullable="false" />
+                    <defaultValueComputed>UUID()</defaultValueComputed>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+            </column>
+            <column name="modify_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                    <valueComputed>ON
+                UPDATE CURRENT_TIMESTAMP</valueComputed>
+            </column>
+            <column name="last_modified_by" type="char(36)">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_Logout" author="thorapi-generator">
+        <createTable tableName="Logout">
+            <column name="id" type="char(36)">
+                <constraints primaryKey="true" nullable="false" />
+                    <defaultValueComputed>UUID()</defaultValueComputed>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+            </column>
+            <column name="modify_date" type="timestamp">
+                <constraints nullable="false" />
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                    <valueComputed>ON
+                UPDATE CURRENT_TIMESTAMP</valueComputed>
+            </column>
+            <column name="last_modified_by" type="char(36)">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

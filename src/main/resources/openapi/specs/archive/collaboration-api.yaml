@@ -1,0 +1,82 @@
+paths:
+  /collaboration:
+    post:
+      summary: Start a new collaboration session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Collaboration'
+      responses:
+        '201':
+          description: Collaboration session started
+        '400':
+          description: Invalid request
+    get:
+      summary: Retrieve a list of collaboration sessions
+      responses:
+        '200':
+          description: A list of collaboration sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collaboration'
+        '404':
+          description: No collaboration sessions found
+  /collaboration/{id}:
+    get:
+      summary: Retrieve a collaboration session by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the collaboration session
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A collaboration session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collaboration'
+        '404':
+          description: Collaboration session not found
+    delete:
+      summary: End a collaboration session by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the collaboration session
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Collaboration session ended
+        '404':
+          description: Collaboration session not found
+components:
+  schemas:
+    Collaboration:
+      type: object
+      properties:
+        id:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        audioFiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Audio'

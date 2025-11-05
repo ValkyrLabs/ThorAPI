@@ -1,0 +1,179 @@
+components:
+  schemas:
+    PersistentLogin:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 64
+        series:
+          type: string
+          maxLength: 64
+        token:
+          type: string
+          maxLength: 64
+        last_used:
+          type: string
+          format: date-time
+      required:
+        - username
+        - series
+        - token
+        - last_used
+
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 50
+        password:
+          type: string
+          maxLength: 50
+        enabled:
+          type: boolean
+      required:
+        - username
+        - password
+        - enabled
+
+    Authority:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 50
+        authority:
+          type: string
+          maxLength: 50
+      required:
+        - username
+        - authority
+
+    AclSid:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        sid:
+          type: string
+          maxLength: 245
+          nullable: true
+        principal:
+          type: integer
+          format: int32
+          nullable: true
+        modified_date:
+          type: string
+          format: date-time
+        create_date:
+          type: string
+          format: date-time
+      required:
+        - id
+        - modified_date
+        - create_date
+
+    AclClass:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        class:
+          type: string
+          maxLength: 245
+          nullable: true
+        modified_date:
+          type: string
+          format: date-time
+        created_date:
+          type: string
+          format: date-time
+      required:
+        - id
+        - modified_date
+        - created_date
+
+    AclObjectIdentity:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        object_id_class:
+          type: integer
+          format: int64
+          nullable: true
+        object_id_identity:
+          type: integer
+          format: int64
+          nullable: true
+        parent_object:
+          type: integer
+          format: int64
+          nullable: true
+        owner_sid:
+          type: integer
+          format: int64
+          nullable: true
+        entries_inheriting:
+          type: integer
+          format: int32
+          nullable: true
+        modified_date:
+          type: string
+          format: date-time
+        create_date:
+          type: string
+          format: date-time
+      required:
+        - id
+        - modified_date
+        - create_date
+
+    AclEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        acl_object_identity:
+          type: integer
+          format: int64
+          nullable: true
+        ace_order:
+          type: integer
+          format: int32
+          nullable: true
+        sid:
+          type: integer
+          format: int64
+          nullable: true
+        mask:
+          type: integer
+          format: int32
+          nullable: true
+        granting:
+          type: integer
+          format: int32
+          nullable: true
+        audit_success:
+          type: integer
+          format: int32
+          nullable: true
+        audit_failure:
+          type: integer
+          format: int32
+          nullable: true
+        modified_date:
+          type: string
+          format: date-time
+        create_date:
+          type: string
+          format: date-time
+      required:
+        - id
+        - modified_date
+        - create_date

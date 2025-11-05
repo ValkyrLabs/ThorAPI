@@ -1,0 +1,75 @@
+
+# Database Configuration
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;NON_KEYWORDS=USER;DATABASE_TO_LOWER=TRUE"
+    username: sa
+    password: sa
+
+  # JPA Properties for Default Data Source
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  
+  # Redis Configuration
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST:localhost}
+      port: ${SPRING_REDIS_PORT:6379}
+      password: ${SPRING_REDIS_PASSWORD:}
+
+  # RabbitMQ Configuration
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:}
+    password: ${SPRING_RABBITMQ_PASSWORD:}
+  
+  # Jackson Configuration
+  jackson:
+    date-format: org.openapitools.RFC3339DateFormat
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+  # Main Configuration
+  main:
+    allow-bean-definition-overriding: true
+
+  # Cache Configuration (if using EhCache)
+  #cache:
+  # type: ehcache
+
+  liquibase:
+    change-log: classpath:liquibase/db/changelog/db.changelog-master-test.yaml
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:}
+
+# Springdoc OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /v1/api-docs
+  swagger-ui:
+    path: /v1/swagger-ui.html
+
+# Logging
+logging:
+  level:
+    org:
+      springframework:
+        security: INFO
+
+# Management Endpoints (for Prometheus)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
+# Valkyr Configuration
+valkyr:
+  service:
+    allowedOrigins: [ "http://localhost:5173" , "http://localhost:3000" ]

@@ -1,0 +1,462 @@
+openapi: 3.0.1
+info:
+  title: ContentData Bundle
+  description: Structured content system for PRDs, funnels, landing pages, and marketing campaigns
+  version: 1.0.0
+
+paths: {}
+
+components:
+  schemas:
+    ContentData:
+      type: object
+      description: |
+        Flexible content structure for storing PRDs, funnel definitions, landing pages,
+        email sequences, and ad campaigns. Follows codegen philosophy - all content
+        is schema-driven and versionable.
+      x-valkyrai-service: microservice
+      properties:
+        contentType:
+          type: string
+          description: Type of content stored
+          enum:
+            - prd
+            - funnel
+            - landing_page
+            - email_sequence
+            - ad_campaign
+            - product_offer
+            - upsell_sequence
+        title:
+          type: string
+          maxLength: 500
+        slug:
+          type: string
+          description: URL-friendly identifier
+          pattern: "^[a-z0-9-]+$"
+          maxLength: 255
+        brand:
+          type: string
+          description: Brand name (e.g., Valkyr Labs, TrustLove)
+          maxLength: 255
+        targetAudience:
+          type: string
+          description: Primary audience (e.g., founders, devs, solopreneurs)
+          maxLength: 500
+        priceTier:
+          type: string
+          enum:
+            - free
+            - tripwire
+            - core
+            - high_ticket
+        priceAmount:
+          type: number
+          format: double
+          description: Price in USD
+        deliveryMode:
+          type: string
+          enum:
+            - course
+            - challenge
+            - mentorship
+            - consulting
+            - saas
+            - template
+            - blueprint
+        heroBenefit:
+          type: string
+          description: Main transformation promise
+          maxLength: 1000
+        problemStatement:
+          type: string
+          description: Core pain points (markdown)
+        promiseStatement:
+          type: string
+          description: Bold transformation outcome (markdown)
+        offerStructure:
+          type: object
+          description: Modules, features, bonuses, timeline
+          additionalProperties: true
+          example:
+            modules:
+              - title: "Week 1: Foundation"
+                description: "Set up your AI workflow engine"
+              - title: "Week 2: Integration"
+                description: "Connect APIs and automate tasks"
+            bonuses:
+              - "Private Discord access"
+              - "1-on-1 kickoff call"
+            timeline: "30 days"
+        funnelStages:
+          type: array
+          description: Funnel stage definitions
+          items:
+            $ref: "#/components/schemas/FunnelStage"
+        landingPageSections:
+          type: array
+          description: Landing page section configs
+          items:
+            $ref: "#/components/schemas/LandingPageSection"
+        adVariants:
+          type: array
+          description: Ad creative variants (TikTok, Instagram, LinkedIn)
+          items:
+            $ref: "#/components/schemas/AdVariant"
+        emailSequence:
+          type: array
+          description: Email nurture sequence
+          items:
+            $ref: "#/components/schemas/EmailTemplate"
+        metadata:
+          type: object
+          description: Additional metadata (UTM params, A/B test variants, etc.)
+          additionalProperties: true
+        productId:
+          type: string
+          format: uuid
+          description: Link to Product entity
+          nullable: true
+        ownerId:
+          type: string
+          format: uuid
+          description: Creator/owner
+        status:
+          type: string
+          enum:
+            - draft
+            - published
+            - archived
+          default: draft
+        version:
+          type: integer
+          description: Version number for content revisions
+          default: 1
+        publishedAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - contentType
+        - title
+        - slug
+        - brand
+
+    FunnelStage:
+      type: object
+      description: Single stage in a funnel (awareness → conversion → upsell)
+      properties:
+        stageName:
+          type: string
+          enum:
+            - awareness
+            - lead_magnet
+            - nurture
+            - conversion
+            - upsell
+        order:
+          type: integer
+          description: Sequence order (1-indexed)
+        config:
+          type: object
+          description: Stage-specific configuration
+          additionalProperties: true
+          example:
+            hook: "This is why you can't build an app with AI..."
+            value: "Because AI writes code — but doesn't ship workflows."
+            cta: "Click the link, I'll show you how ValkyrAI does both."
+            ctaType: "learn_more"
+        automationWorkflowId:
+          type: string
+          format: uuid
+          description: Link to Workflow for stage automation
+          nullable: true
+      required:
+        - stageName
+        - order
+
+    LandingPageSection:
+      type: object
+      description: Section of a landing page (hero, features, testimonials, etc.)
+      properties:
+        sectionType:
+          type: string
+          enum:
+            - hero
+            - social_proof
+            - features
+            - founder_story
+            - comparison
+            - cta
+            - pricing
+            - faq
+        order:
+          type: integer
+        config:
+          type: object
+          description: Section configuration
+          additionalProperties: true
+          example:
+            headline: "Ship your first AI workflow in 7 days"
+            subheadline: "Without hiring a team or learning to code"
+            ctaText: "Get Started Now"
+            ctaUrl: "/checkout"
+            testimonials:
+              - author: "Sarah Chen"
+                role: "Founder @ TechCo"
+                quote: "ValkyrAI saved us 40 hours/week"
+                avatar: "https://..."
+      required:
+        - sectionType
+        - order
+
+    AdVariant:
+      type: object
+      description: Short-form ad creative (15s, 30s, 45s video scripts)
+      properties:
+        platform:
+          type: string
+          enum:
+            - tiktok
+            - instagram
+            - linkedin
+            - youtube
+            - twitter
+        duration:
+          type: integer
+          description: Video duration in seconds
+          enum: [15, 30, 45, 60]
+        hook:
+          type: string
+          description: First 3 seconds (attention grab)
+          maxLength: 500
+        value:
+          type: string
+          description: Value proposition (body)
+          maxLength: 1000
+        cta:
+          type: string
+          description: Call to action
+          maxLength: 500
+        hashtags:
+          type: array
+          items:
+            type: string
+            maxLength: 50
+        visualNotes:
+          type: string
+          description: Visual direction (color, typography, motion)
+          maxLength: 2000
+        variantName:
+          type: string
+          description: A/B test variant identifier
+          maxLength: 100
+      required:
+        - platform
+        - duration
+        - hook
+        - value
+        - cta
+
+    EmailTemplate:
+      type: object
+      description: Email in a nurture sequence
+      properties:
+        sequenceOrder:
+          type: integer
+          description: Position in sequence (1, 2, 3...)
+        subject:
+          type: string
+          maxLength: 500
+        preheader:
+          type: string
+          description: Email preview text
+          maxLength: 500
+          nullable: true
+        bodyHtml:
+          type: string
+          description: HTML email body
+        bodyPlainText:
+          type: string
+          description: Plain text fallback
+        sendDelay:
+          type: integer
+          description: Delay after previous email (in hours)
+        tags:
+          type: array
+          description: Tags for segmentation (e.g., clicked_link, opened)
+          items:
+            type: string
+      required:
+        - sequenceOrder
+        - subject
+        - bodyHtml
+
+    FunnelTemplate:
+      type: object
+      description: Reusable funnel template (e.g., "Reverse SaaS Launch", "Course Launch")
+      x-valkyrai-service: microservice
+      properties:
+        templateName:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 2000
+        category:
+          type: string
+          enum:
+            - saas_launch
+            - course_launch
+            - consulting_offer
+            - lead_magnet
+            - challenge
+        defaultConfig:
+          type: object
+          description: Template default configuration
+          additionalProperties: true
+        systemPrompt:
+          type: string
+          description: AI system prompt for generating content
+        isPublic:
+          type: boolean
+          default: false
+        usageCount:
+          type: integer
+          default: 0
+      required:
+        - templateName
+        - category
+
+    GeneratedFunnelJob:
+      type: object
+      description: Async job for funnel generation
+      x-valkyrai-service: microservice
+      properties:
+        requesterId:
+          type: string
+          format: uuid
+        inputParams:
+          type: object
+          description: Input parameters (brand, offer, audience, etc.)
+          additionalProperties: true
+        templateId:
+          type: string
+          format: uuid
+          nullable: true
+        status:
+          type: string
+          enum:
+            - pending
+            - processing
+            - completed
+            - failed
+          default: pending
+        progress:
+          type: integer
+          description: Progress percentage (0-100)
+          default: 0
+        resultContentDataId:
+          type: string
+          format: uuid
+          nullable: true
+          description: Link to generated ContentData
+        errorMessage:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - requesterId
+        - inputParams
+
+    ProductFunnelWizard:
+      type: object
+      description: |
+        One-click funnel generator that connects Product → FunnelGenerator → ContentData → ProductLandingPage.
+        This is the main UX entry point for creating complete product funnels.
+      x-valkyrai-service: microservice
+      x-valkyrai-controller: true
+      properties:
+        productId:
+          type: string
+          format: uuid
+          description: Source product to generate funnel for
+        wizardStatus:
+          type: string
+          enum:
+            - draft
+            - generating
+            - review
+            - published
+            - failed
+          default: draft
+        brand:
+          type: string
+          description: Brand name (pre-filled from product or editable)
+          maxLength: 255
+        targetAudience:
+          type: string
+          description: Primary audience
+          maxLength: 500
+        priceTier:
+          type: string
+          enum:
+            - free
+            - tripwire
+            - core
+            - high_ticket
+        deliveryMode:
+          type: string
+          enum:
+            - course
+            - challenge
+            - mentorship
+            - consulting
+            - saas
+            - template
+            - blueprint
+        heroBenefit:
+          type: string
+          description: Main transformation promise
+          maxLength: 1000
+        generatedContentDataId:
+          type: string
+          format: uuid
+          nullable: true
+          description: Link to generated ContentData
+        generatedLandingPageId:
+          type: string
+          format: uuid
+          nullable: true
+          description: Link to generated ProductLandingPage
+        workflowId:
+          type: string
+          format: uuid
+          nullable: true
+          description: Link to workflow execution
+        ownerId:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - productId
+        - brand
+        - targetAudience
+        - priceTier
+        - deliveryMode
+        - heroBenefit

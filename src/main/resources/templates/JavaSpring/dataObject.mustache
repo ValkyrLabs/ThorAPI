@@ -1,0 +1,22 @@
+package {{modelPackage}};
+
+import java.util.UUID;
+
+/**
+    A lightweight interface to mix in domain-level behavior without forcing JPA property access.
+    Note: Keep this free of JPA annotations to ensure entities use field access (@Id on fields).
+*/
+public interface DataObject extends com.valkyrlabs.thorapi.data.DataClass {
+
+    UUID getId();
+
+    void setId(UUID u);
+
+    default UUID getWorkflowStateId() {
+        return UUID.randomUUID();
+    }
+
+    default void setWorkflowStateId(UUID u) {
+        // no-op
+    }
+}

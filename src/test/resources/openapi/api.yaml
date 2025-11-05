@@ -1,0 +1,206 @@
+openapi: 3.0.1
+
+info:
+  title: ValkyrAI CORE API
+
+  description: The API for accessing ValkyrAI services
+  termsOfService: https://valkyrlabs.com/tos/
+  contact:
+    email: info@valkyrlabs.com
+  license:
+    name: AGPL 3.0
+    url: https://www.gnu.org/licenses/agpl-3.0.html
+  version: 0.9.25
+
+externalDocs:
+  description: Learn more about ValkyrAI
+  url: https://valkyrlabs.com/vai/docs
+
+servers:
+  - url: http://localhost:8080/v1
+    description: local server (uses live data)
+  - url: https://valkyrlabs.com/v1
+    description: production server
+
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: users
+    description: Operations available to regular users
+  - name: spreadsheets
+    description: Pertaining to spreadsheets operations
+paths:
+
+## Valkyr LABS API
+components:
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the object to retrieve.
+      schema:
+        type: string
+        format: uuid
+
+  ## SCHEMAS LISTED HERE ARE PUBLIC AND AVAILABLE VIA REST API
+  schemas:
+    # Websocket
+    WebsocketSession:
+    WebsocketMessage:
+
+    # MCP
+    McpServer:
+    McpTool:
+    McpResource:
+    McpResourceTemplate:
+    McpResourceResponse:
+    McpToolCallResponse:
+    McpContent:
+    McpMarketplaceItem:
+    McpMarketplaceCatalog:
+    McpDownloadResponse:
+
+    # BACKUP SUBSYSTEM
+    BackupConfig:
+
+    ## 6D
+    StrategicPriority:
+    Goal:
+    GoalDependency:
+    KeyMetric:
+
+    ## Practical Magic
+    ReferralLink:
+
+    ## Oas Support
+    OasOpenAPISpec:
+
+    OasInfo:
+
+    OasServer:
+
+    OasPath:
+
+    OasOperation:
+
+    OasParameter:
+
+    OasResponse:
+
+    OasObjectSchema:
+
+    OasRequired:
+
+    OasComponent:
+
+    OasSecurityScheme:
+
+    Chart:
+
+    ChartSeries:
+
+    OasEnum:
+
+    ## SecureField KMS - the ultimate encryption solution
+    SecureKey:
+
+    ## Valor Service
+    ## Valor is responsible for intelligently managing ThorAPI
+    ## Valor is a function of the ValkyrAI Service
+
+    # the ability to evolve APIs
+    Build:
+    BuildOutput:
+    Solution:
+    # Dependency:
+
+    ## VALKYRAI API-Native Agentic Workflow Engine
+    # AI Worfklows + ThorAPI + Valor
+    Workflow:
+    WorkflowState:
+    Task:
+    ExecModule:
+    EventLog:
+    IntegrationAccount:
+
+    LlmDetails:
+
+    Application:
+
+    ## CMS
+    ContentData:
+    ContentMediaLink:
+
+    ## Ratings
+    Rating:
+
+    ## Sage chat
+    ChatCompletionRequest:
+    ChatCompletionResponse:
+    ChatMessage:
+    ChatResponse:
+
+    ## Basic Section
+    Principal:
+    Organization:
+    Address:
+
+    ## THORAPI
+    # Role:
+    AclEntry:
+
+    ## USER Section
+    UserPreference:
+    Login:
+    Logout:
+
+    ## GRIDHEIM SECTION
+
+    Workbook:
+    Sheet:
+    Cell:
+    SheetRow:
+    SheetColumn:
+    NamedRange:
+    MergeRange:
+    BlankRange:
+    Formula:
+    PtgRef:
+    Ptg:
+    PivotTable:
+    Format:
+    Border:
+    MediaObject:
+
+    ## CRM SECTION
+    Customer:
+    Opportunity:
+    SalesActivity:
+    SalesPipeline:
+    Invoice:
+    Note:
+    Product:
+    Campaign:
+    SalesOrder:
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+    thorapi_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://{username}.valkyrlabs.com:{port}/oauth
+          scopes:
+            write:items: modify owned items
+            read:items: read owned items
+
+    api_key:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://valkyrlabs.com/auth
+          scopes: {}

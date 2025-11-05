@@ -1,0 +1,173 @@
+openapi: 3.0.0
+info:
+  title: MindsDB REST API
+  description: REST API for MindsDB to create models, connect data sources, and make predictions.
+  version: 1.0.0
+
+servers:
+  - url: http://127.0.0.1:47334/api
+
+paths:
+  /datasources:
+    post:
+      summary: Connect a data source
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the data source
+                source:
+                  type: string
+                  description: Type of the data source (e.g., MySQL, PostgreSQL)
+                credentials:
+                  type: object
+                  description: Credentials for the data source
+                  properties:
+                    user:
+                      type: string
+                    password:
+                      type: string
+      responses:
+        '200':
+          description: Data source connected successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+
+  /projects/{projectName}/models:
+    post:
+      summary: Create, train, and deploy an AI/ML model
+      parameters:
+        - name: projectName
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the model
+                training_data:
+                  type: string
+                  description: The dataset to train the model
+                target:
+                  type: string
+                  description: The target column in the dataset to predict
+      responses:
+        '200':
+          description: Model created and trained successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  model_name:
+                    type: string
+                    example: my_model
+
+  /projects/{projectName}/models/{modelName}/predict:
+    post:
+      summary: Get a single prediction from a trained model
+      parameters:
+        - name: projectName
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: modelName
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  text:
+                    type: string
+                  author_username:
+                    type: string
+      responses:
+        '200':
+          description: Prediction result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+
+  /projects/{projectName}/models:
+    get:
+      summary: List all models in a project
+      parameters:
+        - name: projectName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of models
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    status:
+                      type: string
+
+components:
+  schemas:
+    DataSource:
+      type: object
+      properties:
+        name:
+          type: string
+        source:
+          type: string
+        credentials:
+          type: object
+          properties:
+            user:
+              type: string
+            password:
+              type: string
+
+    Model:
+      type: object
+      properties:
+        name:
+          type: string
+        training_data:
+          type: string
+        target:
+          type: string

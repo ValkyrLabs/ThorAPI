@@ -1,0 +1,72 @@
+<!-- HTML for static distribution bundle build -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ThorAPI|ValkyrAI :: Swagger UI</title>
+    <link rel="stylesheet" type="text/css" href="webjars/swagger-ui/swagger-ui.css" />    
+    <link rel="icon" type="image/png" href="webjars/swagger-ui/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="webjars/swagger-ui/favicon-16x16.png" sizes="16x16" />
+    <style>
+        html
+        {
+            box-sizing: border-box;
+            overflow: -moz-scrollbars-vertical;
+            overflow-y: scroll;
+        }
+
+        *,
+        *:before,
+        *:after
+        {
+            box-sizing: inherit;
+        }
+
+        body
+        {
+            margin:0;
+            background: #fafafa;
+        }
+    </style>
+</head>
+
+<body>
+<div id="swagger-ui">
+    <div class="spinner">
+        <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <!-- Hammer handle -->
+            <rect x="45" y="40" width="10" height="50" fill="#795548"/>
+            <!-- Hammer head -->
+            <rect x="30" y="20" width="40" height="20" fill="#607D8B"/>
+            <!-- Hammer bottom detail -->
+            <rect x="45" y="60" width="10" height="5" fill="#455A64"/>
+            <circle cx="50" cy="50" r="48" fill="none" stroke="#CFD8DC" stroke-width="4"/>
+        </svg>
+    </div>
+</div>
+
+<script src="webjars/swagger-ui/swagger-ui-bundle.js" charset="UTF-8"> </script>
+<script src="webjars/swagger-ui/swagger-ui-standalone-preset.js" charset="UTF-8"> </script>
+<script>
+    window.onload = function() {
+        // Begin Swagger UI call region
+        const ui = SwaggerUIBundle({
+            configUrl: 'swagger-config.yaml',
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+            ],
+            plugins: [
+                SwaggerUIBundle.plugins.DownloadUrl
+            ],
+            layout: "StandaloneLayout"
+        });
+        // End Swagger UI call region
+
+        window.ui = ui;
+    };
+</script>
+</body>
+</html>

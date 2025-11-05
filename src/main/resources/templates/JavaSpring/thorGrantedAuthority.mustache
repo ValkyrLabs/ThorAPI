@@ -1,0 +1,20 @@
+package {{apiPackage}};
+
+import org.springframework.security.core.GrantedAuthority;
+
+import {{modelPackage}}.Authority;
+
+public class ThorGrantedAuthority implements GrantedAuthority{
+    
+    private Authority delegate = new Authority();
+
+    public ThorGrantedAuthority(Authority delegate){
+        this.delegate = delegate;
+    }
+
+    @Override
+    public String getAuthority() {
+        return delegate.getAuthority();
+    }
+
+}

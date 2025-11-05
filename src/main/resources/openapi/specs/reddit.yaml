@@ -1,0 +1,612 @@
+openapi: 3.0.3
+info:
+  title: Reddit API
+  version: "1.0.0"
+  description: |
+    OpenAPI specification for the Reddit API as described in the provided documentation.
+
+servers:
+  - url: https://oauth.reddit.com
+    description: Production OAuth endpoint
+
+tags:
+  - name: account
+    description: Endpoints related to user account management (identity, preferences, karma, etc.)
+  - name: collections
+    description: Endpoints for subreddit post collections
+  - name: links_comments
+    description: Endpoints for creating/editing links and comments
+  - name: listings
+    description: Endpoints for retrieving feed listings
+  - name: moderation
+    description: Endpoints for moderator actions and logs
+  - name: live_threads
+    description: Endpoints for Reddit live threads
+  - name: private_messages
+    description: Endpoints for private messages
+  - name: subreddits
+    description: Endpoints for creating, editing, and interacting with subreddits
+  - name: users
+    description: Endpoints for user listings, user flair, and user relationships
+  - name: modmail
+    description: New Modmail endpoints
+  - name: widgets
+    description: Endpoints for subreddit widgets
+  - name: wiki
+    description: Endpoints for subreddit wikis
+
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth2 flow for Reddit
+      flows:
+        authorizationCode:
+          authorizationUrl: https://www.reddit.com/api/v1/authorize
+          tokenUrl: https://www.reddit.com/api/v1/access_token
+          scopes:
+            identity: Access the user’s identity
+            read: Read data from Reddit
+            submit: Submit data (links, comments, etc.)
+            edit: Edit data
+            modconfig: Manage subreddit settings
+            modflair: Manage flair
+            modposts: Approve/remove posts and comments
+            modwiki: Manage and edit wikis
+            privatemessages: Read and send private messages
+            subscribe: Manage user’s subreddit subscriptions
+            vote: Vote on posts and comments
+            # ... add any additional scopes required
+
+  parameters:
+    X-Modhash:
+      name: X-Modhash
+      in: header
+      description: Reddit modhash token (used in older endpoints)
+      required: false
+      schema:
+        type: string
+
+  responses:
+    UnauthorizedError:
+      description: "Authentication information is missing or invalid."
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Unauthorized"
+
+paths:
+
+  ##############################################
+  # ACCOUNT
+  ##############################################
+  /api/v1/me:
+    get:
+      tags:
+        - account
+      summary: Returns the identity of the current authorized user
+      operationId: getMe
+      security:
+        - oauth2: [ identity ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: "username"
+                  id:
+                    type: string
+                    example: "t2_abc123"
+                  created:
+                    type: number
+                    example: 1613001004
+                  # ... additional user fields
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/v1/me/karma:
+    get:
+      tags:
+        - account
+      summary: Return a breakdown of subreddit karma for the current user
+      operationId: getMeKarma
+      security:
+        - oauth2: [ identity ]
+      responses:
+        '200':
+          description: A list of subreddits and karma
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  karma:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        sr:
+                          type: string
+                          example: "AskReddit"
+                        comment_karma:
+                          type: integer
+                          example: 100
+                        link_karma:
+                          type: integer
+                          example: 50
+
+  ##############################################
+  # COLLECTIONS
+  ##############################################
+  /api/v1/collections/collection:
+    get:
+      tags:
+        - collections
+      summary: Fetch a collection including all the links
+      operationId: getCollection
+      security:
+        - oauth2: [ modposts ]
+      parameters:
+        - name: collection_id
+          in: query
+          description: The UUID of the collection
+          required: true
+          schema:
+            type: string
+        - name: include_links
+          in: query
+          description: Include details of links in the response
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: A collection object
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  collection_id:
+                    type: string
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  display_layout:
+                    type: string
+                  # ...
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  ##############################################
+  # LINKS & COMMENTS
+  ##############################################
+  /api/comment:
+    post:
+      tags:
+        - links_comments
+      summary: Submit a new comment or reply
+      operationId: createComment
+      security:
+        - oauth2: [ submit ]
+      parameters:
+        - $ref: '#/components/parameters/X-Modhash'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                thing_id:
+                  type: string
+                  description: Fullname of parent thing
+                  example: "t3_15bfi0"
+                text:
+                  type: string
+                  description: Raw markdown text of the comment
+      responses:
+        '200':
+          description: Comment creation response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  json:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          things:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                kind:
+                                  type: string
+                                data:
+                                  type: object
+                                  # ...
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/vote:
+    post:
+      tags:
+        - links_comments
+      summary: Cast a vote on a thing (link or comment)
+      operationId: vote
+      security:
+        - oauth2: [ vote ]
+      parameters:
+        - $ref: '#/components/parameters/X-Modhash'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: Fullname of the thing (t3_ or t1_)
+                dir:
+                  type: integer
+                  enum: [1, 0, -1]
+                  description: "1 = upvote, 0 = remove vote, -1 = downvote"
+      responses:
+        '200':
+          description: Vote cast successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  ##############################################
+  # LISTINGS
+  ##############################################
+  /best:
+    get:
+      tags:
+        - listings
+      summary: Retrieve a list of posts sorted by "best"
+      operationId: getBestListing
+      security:
+        - oauth2: [ read ]
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 25
+            maximum: 100
+            minimum: 1
+        - name: after
+          in: query
+          schema:
+            type: string
+            description: fullname of the last item
+        - name: before
+          in: query
+          schema:
+            type: string
+            description: fullname of the first item
+      responses:
+        '200':
+          description: A listing of posts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  kind:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      after:
+                        type: string
+                        nullable: true
+                      before:
+                        type: string
+                        nullable: true
+                      children:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            kind:
+                              type: string
+                            data:
+                              type: object
+                              # ...
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  ##############################################
+  # LIVE THREADS
+  ##############################################
+  /api/live/create:
+    post:
+      tags:
+        - live_threads
+      summary: Create a new live thread
+      operationId: createLiveThread
+      security:
+        - oauth2: [ submit ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  maxLength: 120
+                description:
+                  type: string
+                resources:
+                  type: string
+                nsfw:
+                  type: boolean
+      responses:
+        '200':
+          description: Returns the newly created live thread
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  ##############################################
+  # PRIVATE MESSAGES
+  ##############################################
+  /api/compose:
+    post:
+      tags:
+        - private_messages
+      summary: Compose a new private message
+      operationId: composeMessage
+      security:
+        - oauth2: [ privatemessages ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                to:
+                  type: string
+                  description: The recipient user’s name
+                subject:
+                  type: string
+                  maxLength: 100
+                text:
+                  type: string
+      responses:
+        '200':
+          description: Message composed
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  ##############################################
+  # MODERATION
+  ##############################################
+  /api/approve:
+    post:
+      tags:
+        - moderation
+      summary: Approve a link or comment
+      operationId: approveThing
+      security:
+        - oauth2: [ modposts ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: fullname of the thing to approve
+      responses:
+        '200':
+          description: Approved
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  ##############################################
+  # NEW MODMAIL
+  ##############################################
+  /api/mod/conversations:
+    get:
+      tags:
+        - modmail
+      summary: Get conversations for a logged in user or subreddits
+      operationId: getModConversations
+      security:
+        - oauth2: [ modmail ]
+      parameters:
+        - name: entity
+          in: query
+          required: false
+          schema:
+            type: string
+            description: Comma-delimited list of subreddit names
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [all, appeals, notifications, inbox, filtered, inprogress, mod, archived, default, highlighted, join_requests, new]
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 25
+      responses:
+        '200':
+          description: A list of conversations
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  ##############################################
+  # SUBREDDITS
+  ##############################################
+  /api/site_admin:
+    post:
+      tags:
+        - subreddits
+      summary: Create or configure a subreddit
+      operationId: createOrConfigureSubreddit
+      security:
+        - oauth2: [ modconfig ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Subreddit name (if creating)
+                title:
+                  type: string
+                  maxLength: 100
+                public_description:
+                  type: string
+                over_18:
+                  type: boolean
+                # ... (many more fields are possible)
+      responses:
+        '200':
+          description: Successful creation or update
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  ##############################################
+  # USERS
+  ##############################################
+  /api/username_available:
+    get:
+      tags:
+        - users
+      summary: Check if a username is available
+      operationId: usernameAvailable
+      parameters:
+        - name: user
+          in: query
+          required: true
+          schema:
+            type: string
+            description: The desired username to check
+      responses:
+        '200':
+          description: Username availability response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  available:
+                    type: boolean
+                    description: true if available, false otherwise
+
+  ##############################################
+  # WIDGETS
+  ##############################################
+  /r/{subreddit}/api/widget:
+    post:
+      tags:
+        - widgets
+      summary: Add a widget to a subreddit
+      operationId: addSubredditWidget
+      security:
+        - oauth2: [ structuredstyles ]
+      parameters:
+        - name: subreddit
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                kind:
+                  type: string
+                  enum: [image, calendar, textarea, menu, button, community-list, custom, post-flair]
+                shortName:
+                  type: string
+                  maxLength: 30
+                # ... widget-specific fields
+      responses:
+        '200':
+          description: Widget created
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  ##############################################
+  # WIKI
+  ##############################################
+  /r/{subreddit}/wiki/{page}:
+    get:
+      tags:
+        - wiki
+      summary: Return the content of a wiki page
+      operationId: getWikiPage
+      security:
+        - oauth2: [ modwiki ]
+      parameters:
+        - name: subreddit
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: v
+          in: query
+          required: false
+          schema:
+            type: string
+          description: A specific wiki revision ID
+        - name: v2
+          in: query
+          required: false
+          schema:
+            type: string
+          description: A second wiki revision ID for diff
+      responses:
+        '200':
+          description: The wiki page content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content_md:
+                    type: string
+                  revision_id:
+                    type: string
+                  # ...
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'

@@ -1,0 +1,605 @@
+openapi: 3.0.1
+info:
+  title: Valkyr Core Bundle
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    ## Principal - user, service, or agent
+    Principal:
+      type: object
+      required:
+        - email
+        - password
+        - username
+      properties:
+        firstName:
+          type: string
+          description: first name of user (encrypted)
+        middleName:
+          type: string
+          description: middle name of user
+        lastName:
+          type: string
+          description: last name of user (encrypted)
+        username:
+          type: string
+          description: Your account user name
+        password:
+          type: string
+          description: Your account password
+          format: password
+        email:
+          type: string
+          description: The main email address for the user (encrypted)
+          format: email
+        avatarUrl:
+          type: string
+          description: URL for the user avatar image
+          format: url
+        acceptedCookies:
+          type: boolean
+        acceptedTos:
+          type: boolean
+        enabled:
+          type: boolean
+        credentialNonExpired:
+          type: boolean
+        accountEnabled:
+          type: boolean
+        accountNonLocked:
+          type: boolean
+        accountNonExpired:
+          type: boolean
+        roleList:
+          type: array
+          items:
+            $ref: "#/components/schemas/Role"
+        authorityList:
+          type: array
+          items:
+            $ref: "#/components/schemas/Authority"
+
+    ## UserPreference - user settings
+    UserPreference:
+      type: object
+      properties:
+        principalId:
+          type: string
+          format: uuid
+        preference:
+          type: string
+        preferenceType:
+          type: string
+          enum:
+            - ux-layout
+            - ux-mode
+            - ux-theme
+            - measurement
+
+    ## Address - user or org address
+    Address:
+      type: object
+      required:
+        - city
+        - name
+        - state
+        - street1
+        - zip
+      properties:
+        name:
+          type: string
+        street1:
+          type: string
+        street2:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zip:
+          type: string
+
+    ## Organization - company/org
+    Organization:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        homePage:
+          type: string
+          format: url
+        phone:
+          type: string
+        addressId:
+          type: string
+          format: uuid
+
+    ## Role - RBAC role
+    Role:
+      type: object
+      properties:
+        principalId:
+          type: string
+          format: uuid
+        roleName:
+          type: string
+          enum: [EVERYONE, STAFF, ADMIN]
+          default: EVERYONE
+
+    ## Authority - RBAC authority
+    Authority:
+      type: object
+      properties:
+        principalId:
+          type: string
+          format: uuid
+        username:
+          type: string
+        authority:
+          type: string
+
+    ## ACL - RBAC system
+    AclSid:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        sid:
+          type: string
+        principal:
+          type: boolean
+
+    AclClass:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        _class:
+          type: string
+
+    AclObjectIdentity:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        objectIdClass:
+          $ref: "#/components/schemas/AclClass"
+        objectIdIdentity:
+          type: string
+          format: uuid
+        parentObject:
+          $ref: "#/components/schemas/AclObjectIdentity"
+        ownerSid:
+          $ref: "#/components/schemas/AclSid"
+        entriesInheriting:
+          type: boolean
+        aclEntries:
+          type: array
+          items:
+            $ref: "#/components/schemas/AclEntry"
+
+    AclEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        aclObjectIdentity:
+          $ref: "#/components/schemas/AclObjectIdentity"
+        aceOrder:
+          type: integer
+          format: int32
+        aclSid:
+          $ref: "#/components/schemas/AclSid"
+        mask:
+          type: integer
+          format: int32
+        granting:
+          type: boolean
+        auditSuccess:
+          type: boolean
+        auditFailure:
+          type: boolean
+
+    ## File Management System Models
+
+    FileRecord:
+      type: object
+      required:
+        - orgId
+        - uploaderId
+        - storageDriverId
+        - storageKey
+        - filename
+        - status
+        - virusScanStatus
+      properties:
+        orgId:
+          type: string
+          format: uuid
+          description: Organization ID
+        uploaderId:
+          type: string
+          format: uuid
+          description: ID of the user who uploaded the file
+        storageDriverId:
+          type: string
+          maxLength: 64
+          description: Storage driver identifier
+        storageKey:
+          type: string
+          maxLength: 512
+          description: Storage key for the file
+        filename:
+          type: string
+          maxLength: 256
+          description: Original filename
+        mimeType:
+          type: string
+          maxLength: 192
+          description: MIME type of the file
+        sizeBytes:
+          type: integer
+          format: int64
+          description: File size in bytes
+        checksumSha256:
+          type: string
+          maxLength: 70
+          description: SHA-256 checksum for integrity verification
+        providerEtag:
+          type: string
+          maxLength: 128
+          description: Provider-specific ETag
+        status:
+          type: string
+          description: Lifecycle states for file records
+          enum:
+            - UPLOADING
+            - SCANNING
+            - AVAILABLE
+            - BLOCKED
+            - DELETED
+            - FAILED
+        virusScanStatus:
+          type: string
+          description: Virus/DLP scan lifecycle for stored files
+          enum:
+            - PENDING
+            - IN_PROGRESS
+            - CLEAN
+            - INFECTED
+            - SKIPPED
+        spaceId:
+          type: string
+          format: uuid
+          description: Reference to the space containing this file
+        description:
+          type: string
+          maxLength: 512
+          description: Optional file description
+        directoryPath:
+          type: string
+          maxLength: 512
+          description: Directory path within the space
+        retentionExpiresAt:
+          type: string
+          format: date-time
+          description: When the file expires for retention policies
+        deletedAt:
+          type: string
+          format: date-time
+          description: Soft delete timestamp
+
+    FileUploadSession:
+      type: object
+      required:
+        - uploadId
+        - storageDriverId
+        - storageKey
+        - fileId
+        - initiatedBy
+        - expiresAt
+      properties:
+        uploadId:
+          type: string
+          maxLength: 256
+          description: Unique upload identifier
+        storageDriverId:
+          type: string
+          maxLength: 64
+          description: Storage driver identifier
+        storageKey:
+          type: string
+          maxLength: 512
+          description: Storage key for the upload
+        fileId:
+          type: string
+          format: uuid
+          description: Reference to the associated file record
+        initiatedBy:
+          type: string
+          format: uuid
+          description: User who initiated the upload
+        expiresAt:
+          type: string
+          format: date-time
+          description: When the upload session expires
+        completedAt:
+          type: string
+          format: date-time
+          description: When the upload was completed
+        partSizeBytes:
+          type: integer
+          format: int64
+          description: Size of each part in bytes
+        metadataJson:
+          type: string
+          maxLength: 2048
+          description: Additional metadata as JSON string
+
+    File:
+      type: object
+      required:
+        - name
+        - storageKey
+        - contentType
+        - size
+        - status
+      properties:
+        name:
+          type: string
+          description: Original filename
+          maxLength: 255
+        description:
+          type: string
+          description: Optional file description
+          maxLength: 1000
+        storageKey:
+          type: string
+          description: S3 object key or storage path
+          maxLength: 1024
+        contentType:
+          type: string
+          description: MIME type of the file
+          maxLength: 255
+        size:
+          type: integer
+          format: int64
+          description: File size in bytes
+        checksum:
+          type: string
+          description: SHA-256 checksum for integrity verification
+          maxLength: 64
+        status:
+          type: string
+          description: File processing status
+          enum:
+            - uploading
+            - processing
+            - ready
+            - failed
+            - deleted
+        tags:
+          type: array
+          items:
+            type: string
+          description: Searchable tags for the file
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Additional file metadata as JSON
+        spaceId:
+          type: string
+          format: uuid
+          description: Reference to the space containing this file
+        parentFileId:
+          type: string
+          format: uuid
+          description: Reference to parent file for versions
+        version:
+          type: integer
+          description: Version number for file versioning
+          default: 1
+        isLatest:
+          type: boolean
+          description: Whether this is the latest version
+          default: true
+
+    Space:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+          description: Space name
+          maxLength: 255
+        description:
+          type: string
+          description: Space description
+          maxLength: 1000
+        type:
+          type: string
+          description: Type of space
+          enum:
+            - personal
+            - shared
+            - public
+            - data_room
+        settings:
+          type: object
+          additionalProperties: true
+          description: Space configuration settings
+        parentSpaceId:
+          type: string
+          format: uuid
+          description: Parent space for hierarchical organization
+        isActive:
+          type: boolean
+          description: Whether the space is active
+          default: true
+
+    SpaceMember:
+      type: object
+      required:
+        - spaceId
+        - principalId
+        - role
+      properties:
+        spaceId:
+          type: string
+          format: uuid
+          description: Reference to the space
+        principalId:
+          type: string
+          format: uuid
+          description: Reference to the user/principal
+        role:
+          type: string
+          description: User's role in the space
+          enum:
+            - viewer
+            - contributor
+            - admin
+            - owner
+        permissions:
+          type: array
+          items:
+            type: string
+          description: Additional granular permissions
+
+    SpaceFile:
+      type: object
+      required:
+        - spaceId
+        - fileId
+      properties:
+        spaceId:
+          type: string
+          format: uuid
+          description: Reference to the space
+        fileId:
+          type: string
+          format: uuid
+          description: Reference to the file
+        addedDate:
+          type: string
+          format: date-time
+          description: When the file was added to the space
+        isPublic:
+          type: boolean
+          description: Whether the file is publicly accessible in this space
+          default: false
+
+    FileDownloadToken:
+      type: object
+      required:
+        - token
+        - fileId
+        - expiresAt
+      properties:
+        token:
+          type: string
+          description: Secure download token
+          maxLength: 255
+        fileId:
+          type: string
+          format: uuid
+          description: Reference to the file
+        expiresAt:
+          type: string
+          format: date-time
+          description: Token expiration timestamp
+        downloadCount:
+          type: integer
+          description: Number of times token has been used
+          default: 0
+        maxDownloads:
+          type: integer
+          description: Maximum allowed downloads (-1 for unlimited)
+          default: -1
+        ipAddress:
+          type: string
+          description: IP address that requested the token
+          maxLength: 45
+
+    FileAuditLog:
+      type: object
+      required:
+        - fileId
+        - action
+      properties:
+        fileId:
+          type: string
+          format: uuid
+          description: Reference to the file
+        action:
+          type: string
+          description: Action that was performed
+          enum:
+            - upload
+            - download
+            - view
+            - edit
+            - delete
+            - share
+            - move
+            - copy
+        details:
+          type: string
+          description: Additional action details
+          maxLength: 1000
+        ipAddress:
+          type: string
+          description: IP address of the action initiator
+          maxLength: 45
+        userAgent:
+          type: string
+          description: User agent string
+          maxLength: 500
+
+    FileVersion:
+      type: object
+      required:
+        - fileId
+        - versionNumber
+        - storageKey
+        - size
+      properties:
+        fileId:
+          type: string
+          format: uuid
+          description: Reference to the main file record
+        versionNumber:
+          type: integer
+          description: Version number
+        storageKey:
+          type: string
+          description: Storage key for this version
+          maxLength: 1024
+        size:
+          type: integer
+          format: int64
+          description: Size of this version
+        checksum:
+          type: string
+          description: Checksum for this version
+          maxLength: 64
+        changeLog:
+          type: string
+          description: Description of changes in this version
+          maxLength: 2000
+        isCurrent:
+          type: boolean
+          description: Whether this is the current version
+          default: false

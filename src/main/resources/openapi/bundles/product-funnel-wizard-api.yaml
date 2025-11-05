@@ -1,0 +1,196 @@
+openapi: 3.0.1
+info:
+  title: Product Funnel Wizard API
+  description: Simple UX endpoints for one-click funnel generation
+  version: 1.0.0
+
+paths:
+  /api/v1/productFunnelWizard/start:
+    post:
+      summary: Start funnel generation wizard for a product
+      operationId: startFunnelWizard
+      tags: [ProductFunnelWizard]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                [
+                  productId,
+                  brand,
+                  targetAudience,
+                  priceTier,
+                  deliveryMode,
+                  heroBenefit,
+                ]
+              properties:
+                productId:
+                  type: string
+                  format: uuid
+                brand:
+                  type: string
+                  example: "Valkyr Labs"
+                targetAudience:
+                  type: string
+                  example: "developers, founders"
+                priceTier:
+                  type: string
+                  enum: [free, tripwire, core, high_ticket]
+                  example: "core"
+                priceAmount:
+                  type: number
+                  format: double
+                  example: 299.0
+                deliveryMode:
+                  type: string
+                  enum:
+                    [
+                      course,
+                      challenge,
+                      mentorship,
+                      consulting,
+                      saas,
+                      template,
+                      blueprint,
+                    ]
+                  example: "course"
+                heroBenefit:
+                  type: string
+                  example: "Master AI workflows in 14 days"
+                templateId:
+                  type: string
+                  format: uuid
+                  description: Optional funnel template
+      responses:
+        "200":
+          description: Wizard started successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WizardStartResponse"
+        "400":
+          description: Invalid input
+        "500":
+          description: Server error
+
+  /api/v1/productFunnelWizard/{wizardId}/status:
+    get:
+      summary: Get wizard status and progress
+      operationId: getWizardStatus
+      tags: [ProductFunnelWizard]
+      parameters:
+        - name: wizardId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Wizard status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WizardStatusResponse"
+
+  /api/v1/productFunnelWizard/{wizardId}/publish:
+    post:
+      summary: Publish generated funnel (make landing page live)
+      operationId: publishFunnel
+      tags: [ProductFunnelWizard]
+      parameters:
+        - name: wizardId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Funnel published
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  landingPageUrl:
+                    type: string
+                    example: "/valkyr-labs-ai-masterclass"
+                  published:
+                    type: boolean
+                    example: true
+
+  /api/v1/productFunnelWizard/{wizardId}/preview:
+    get:
+      summary: Get preview HTML of generated landing page
+      operationId: previewFunnel
+      tags: [ProductFunnelWizard]
+      parameters:
+        - name: wizardId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: HTML preview
+          content:
+            text/html:
+              schema:
+                type: string
+
+components:
+  schemas:
+    WizardStartResponse:
+      type: object
+      properties:
+        wizardId:
+          type: string
+          format: uuid
+        workflowId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [generating]
+        estimatedSeconds:
+          type: integer
+          example: 30
+
+    WizardStatusResponse:
+      type: object
+      properties:
+        wizardId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [draft, generating, review, published, failed]
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
+        currentStep:
+          type: string
+          example: "Generating ad variants..."
+        contentDataId:
+          type: string
+          format: uuid
+          nullable: true
+        landingPageId:
+          type: string
+          format: uuid
+          nullable: true
+        landingPageUrl:
+          type: string
+          nullable: true
+        errorMessage:
+          type: string
+          nullable: true
+        generatedAssets:
+          type: string
+          nullable: true
+          description: "JSON string containing generated assets metadata (prdGenerated, landingPageSectionsCount, adVariantsCount, emailSequenceCount)"

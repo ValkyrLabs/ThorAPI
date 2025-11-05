@@ -1,0 +1,15 @@
+/audio:
+  post:
+    summary: Upload an audio file
+    responses:
+      '200':
+        description: Successful operation
+components:
+  schemas:
+    Audio:
+      type: object
+      properties:
+        id:
+          type: string
+        filename:
+          type: string

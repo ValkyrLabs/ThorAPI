@@ -1,0 +1,29 @@
+openapi: 3.0.1
+
+info:
+  title: Valkyr Labs GridHeim API
+
+  description: The API for accessing Valkyr GridHeim services
+  termsOfService: https://valkyrlabs.com/v1/docs/Legal/tos/
+  contact:
+    email: info@valkyrlabs.com
+  license:
+    name: AGPL 3.0
+    url: https://valkyrlabs.com/v1/docs/Legal/valkyr-license
+  version: 0.9.25
+
+externalDocs:
+  description: Learn more about ValkyrAI
+  url: https://valkyrlabs.com/vai/docs
+
+servers:
+  - url: http://localhost:8080/v1
+    description: local server (uses live data)
+  - url: https://valkyrlabs.com/v1
+    description: production server
+
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: users
+    description: Operations available to regular users

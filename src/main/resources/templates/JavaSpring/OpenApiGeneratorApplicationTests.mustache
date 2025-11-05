@@ -1,0 +1,49 @@
+package org.openapitools;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import static org.mockito.Mockito.mock;
+import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.security.acls.model.SidRetrievalStrategy;
+import org.springframework.security.acls.domain.SidRetrievalStrategyImpl;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+@SpringBootTest(classes = OpenApiGeneratorApplicationTests.TestApp.class)
+@ActiveProfiles("test")
+class OpenApiGeneratorApplicationTests {
+    
+    public OpenApiGeneratorApplicationTests(){
+        System.setProperty("THORAPI_SECRET_KEY", "W3ngNBCp80mgG0wwjTslfeQoG2hQa9ryqbemTEX01Wg=");
+    }
+    
+    @Test
+    void contextLoads() {
+    }
+    
+    @SpringBootApplication
+    @EntityScan(basePackages = { "com.valkyrlabs.model", "org.openapitools" })
+    @EnableJpaRepositories(basePackages = { "com.valkyrlabs.api", "org.openapitools" })
+    static class TestApp { }
+    
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        @Primary
+        public MutableAclService aclService() {
+            return mock(MutableAclService.class);
+        }
+
+        @Bean
+        @Primary
+        public SidRetrievalStrategy sidRetrievalStrategy() {
+            return new SidRetrievalStrategyImpl();
+        }
+    }
+
+}

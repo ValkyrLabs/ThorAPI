@@ -1,0 +1,115 @@
+# Spring Framework Configuration
+jakarta:
+  persistence:
+    jdbc:
+      url:
+# Database
+spring:
+  datasource:
+    # Use the same env vars convention as thorapi
+    url: ${VSPRING_DATASOURCE_URL:${SPRING_DATASOURCE_URL:}}
+    username: ${VSPRING_DATASOURCE_USERNAME:${SPRING_DATASOURCE_USERNAME:}}
+    password: ${VSPRING_DATASOURCE_PASSWORD:${SPRING_DATASOURCE_PASSWORD:}}
+    driver-class-name: ${VSPRING_DATASOURCE_DRIVER:${SPRING_DATASOURCE_DRIVER:com.mysql.cj.jdbc.Driver}}
+
+    hikari:
+      register-mbeans: true
+      idle-timeout: 9000000
+      # allow_update_outside_transaction: true
+      minimum-idle: 5 # Minimum number of idle connections
+      maximum-pool-size: 30 # Maximum pool size
+      max-lifetime: 1800000 # 30 minutes, maximum connection lifetime
+      connection-timeout: 30000 # 30 seconds timeout to get a connection
+      auto-commit: true # Enable autocommit
+      # isolation-level: TRANSACTION_READ_COMMITTED # Recommended default isolation level
+      pool-name: HikariCP-ThorAPI-Pool # Name the pool for easier debugging
+      maxLifetime: 120000
+      leak-detection-threshold: 3000
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 120MB
+
+  jpa:
+    show-sql: false
+    open-in-view: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        generate_statistics: false
+        format_sql: false
+
+  web:
+    resources:
+      static-locations: file:${user.dir}/public/,classpath:/static/
+
+  jmx:
+    enabled: true
+
+  # Redis Configuration
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST:localhost}
+      port: ${SPRING_REDIS_PORT:6379}
+      password: ${SPRING_REDIS_PASSWORD:}
+
+  # RabbitMQ Configuration
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:}
+    password: ${SPRING_RABBITMQ_PASSWORD:}
+
+  # Main Configuration
+  main:
+    allow-bean-definition-overriding: true
+
+  # Cache Configuration (if using EhCache)
+  #cache:
+  #  type: ehcache
+
+  # liquibase:
+  #  change-log: classpath:liquibase/db/changelog/db.changelog-master.yaml
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:}
+  expiration-days: 30
+
+# Logging
+
+# Management Endpoints (for Prometheus)
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health, info, prometheus
+    jmx:
+      exposure:
+        include: health, info, metrics
+  endpoint:
+    metrics:
+      enabled: true
+  metrics:
+    tags:
+      application: thorapi
+    export:
+      prometheus:
+        enabled: true
+
+# Springdoc OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /v1/api-docs
+  swagger-ui:
+    path: /v1/swagger-ui.html
+
+valkyrai:
+  file-storage:
+    base-dir: /public/userfiles
+  rate-limit-rpm: 100
+  rate-limit-max-fails: 5
+  rate-limit-lockout-minutes: 15

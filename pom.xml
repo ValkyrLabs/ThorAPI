@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.valkyrlabs</groupId>
+        <artifactId>valhalla</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>thorapi</artifactId>
+    <packaging>jar</packaging>
+    <name>ThorAPI CodeGen</name>
+    <description>ThorAPI Core Code Generation Services</description>
+    <properties>
+        <aws.java.sdk.version>2.13.7</aws.java.sdk.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- AspectJ weaver for LTW during tests -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- AspectJ runtime -->
+
+
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.8.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-webmvc</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+    <profiles>
+        <!-- Standard configuration -->
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <!-- Keep ThorAPI build hooks active unless explicitly disabled -->
+                    <name>!skip.thorapi.default</name>
+                </property>
+            </activation>
+
+            <properties>
+                <toolsjar>${java.home}/../lib/tools.jar</toolsjar>
+            </properties>
+
+            <build>
+                <resources>
+                    <resource>
+                        <filtering>false</filtering>
+                        <directory>${basedir}/src/main/resources</directory>
+                    </resource>
+                    <!-- If OpenAPI generator produces resource files, include them explicitly -->
+                    <resource>
+                        <directory>${basedir}/generated/spring/src/main/resources</directory>
+                        <filtering>false</filtering>
+                        <includes>
+                            <include>**/*</include>
+                        </includes>
+                    </resource>
+                </resources>
+                <plugins>
+                    <!-- Add generated Java as sources, not resources -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.6.0</version>
+                        <executions>
+                            <execution>
+                                <id>add-generated-sources</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>${project.basedir}/generated/spring/src/main/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>add-generated-test-sources</id>
+                                <phase>generate-test-sources</phase>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>${project.basedir}/generated/spring/src/test/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Ensure consistent Java compilation settings -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.13.0</version>
+                        <configuration>
+                            <source>${java.version}</source>
+                            <target>${java.version}</target>
+                            <debug>true</debug>
+                            <debuglevel>lines,vars,source</debuglevel>
+                            <compilerArgs>
+                                <arg>-parameters</arg>
+                                <arg>-g</arg>
+                                <arg>-Xlint</arg>
+                            </compilerArgs>
+                            <!-- IMPORTANT: avoid stale classpath issues with ajc -->
+                            <useIncrementalCompilation>false</useIncrementalCompilation>
+                        </configuration>
+                    </plugin>
+                    <!-- Maven Surefire Plugin for Running Tests -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.5.2</version>
+                        <configuration>
+                            <excludes>
+                                <exclude>${exclude.tests}</exclude>
+                            </excludes>
+                            <runOrder>alphabetical</runOrder>
+                        </configuration>
+                    </plugin>
+                    <!-- AspectJ compile-time weaving for this module -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>aspectj-maven-plugin</artifactId>
+                        <version>1.15.0</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.aspectj</groupId>
+                                <artifactId>aspectjtools</artifactId>
+                                <version>${aspectj.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <aspectjVersion>${aspectj.version}</aspectjVersion>
+                            <complianceLevel>${java.version}</complianceLevel>
+                            <source>${java.version}</source>
+                            <target>${java.version}</target>
+                            <showWeaveInfo>true</showWeaveInfo>
+                            <encoding>UTF-8</encoding>
+                            <Xlint>ignore</Xlint>
+                            <includes>
+                                <include>**/*.java</include>
+                                <include>**/*.aj</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>ajc-compile</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>ajc-test-compile</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>test-compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Maven Compiler Plugin 
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.8.1</version>
+                        <configuration>
+                            <debug>true</debug>
+                            <debuglevel>lines,vars,source</debuglevel>
+                            <source>${maven.compiler.source}</source>
+                            <target>${maven.compiler.target}</target>
+                            <compilerArgs>
+                                <arg>-parameters</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>versions-maven-plugin</artifactId>
+                    </plugin>-->
+                    <!-- Maven Source Plugin 
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>-->
+                    <!-- Maven Javadoc Plugin CAUSES UGLY BUILD ERRORS :(
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.11.2</version>
+                        <configuration>
+                            <failOnError>false</failOnError>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    -->
+                    <!-- Maven GPG Plugin for Signing Artifacts 
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.7</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    -->
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.7.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                        </configuration>
+                    </plugin>
+
+                    <!-- Bundle assembly happens inside ThorAPI.main() when invoked
+                         For Maven builds, run ThorAPI manually ONCE to generate api-out.yaml
+                         For runtime (web service), ThorAPIBundlePipeline handles bundle composition
+                    -->
+                    <!--
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.6.2</version>
+                        <executions>
+                            <execution>
+                                <id>enhance-with-thorapi</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>com.valkyrlabs.ThorAPI</mainClass>
+                                    <arguments>
+                                        <argument>
+                                            ${project.parent.basedir}/valkyrai/src/main/resources/openapi/api.yaml</argument>
+                                        <argument>openapi/api</argument>
+                                        <argument>
+                                            ${project.basedir}/src/main/resources/openapi/api-out.yaml</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    -->
+
+                    <!-- Step 2: Generate models from enhanced spec -->
+                    <!-- TODO: move to thorapi-core -->
+                    <plugin>
+                        <groupId>org.openapitools</groupId>
+                        <artifactId>openapi-generator-maven-plugin</artifactId>
+                        <!-- RELEASE_VERSION -->
+                        <version>7.5.0</version>
+                        <!-- /RELEASE_VERSION -->
+                        <executions>
+                            <execution>
+                                <id>api.service</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                                <configuration>
+                                    <inputSpec>
+                                        ${project.basedir}/src/main/resources/openapi/api-out.yaml</inputSpec>
+                                    <artifactId>valkyrai-api</artifactId>
+                                    <groupId>com.valkyrlabs</groupId>
+                                    <artifactVersion>${project.version}</artifactVersion>
+                                    <generatorName>spring</generatorName>
+
+                                    <library>spring-boot</library>
+                                    <apiPackage>com.valkyrlabs.api</apiPackage>
+                                    <modelPackage>com.valkyrlabs.model</modelPackage>
+                                    <generateModelTests>true</generateModelTests>
+                                    <generateModelDocumentation>true</generateModelDocumentation>
+                                    <generateApiTests>true</generateApiTests>
+                                    <generateApiDocumentation>true</generateApiDocumentation>
+                                    <templateResourcePath>
+                                        ${project.basedir}/src/main/resources/templates/JavaSpring
+                                    </templateResourcePath>
+                                    <configurationFile>
+                                        ${project.basedir}/src/main/resources/generator.config.yaml
+                                    </configurationFile>
+                                    <output>${project.basedir}/generated/spring</output>
+                                    <configOptions>
+                                        <validateSpec>false</validateSpec>
+                                        <name>ThorAPI</name>
+                                        <developerOrganization>Valkyr Labs Inc</developerOrganization>
+                                        <artifactDescription>ValkyrAI API</artifactDescription>
+                                        <useResponseEntity>true</useResponseEntity>
+                                        <returnSuccessCode>true</returnSuccessCode>
+                                        <snapshotVersion>true</snapshotVersion>
+                                        <cleanupOutput>true</cleanupOutput>
+                                        <useJakartaEe>true</useJakartaEe>
+                                        <dateLibrary>java8</dateLibrary>
+                                        <serializableModel>true</serializableModel>
+                                        <delegatePattern>true</delegatePattern>
+                                        <performBeanValidation>true</performBeanValidation>
+                                        <skipDefaultInterface>false</skipDefaultInterface>
+                                        <async>true</async>
+                                        <useJakartaEe>true</useJakartaEe>
+                                        <openApiNullable>false</openApiNullable>
+                                        <useBeanValidation>true</useBeanValidation>
+                                        <swagger2AnnotationLibrary>true</swagger2AnnotationLibrary>
+                                    </configOptions>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <mainClass>com.valkyrlabs.ThorAPI</mainClass>
+                            <classifier>exec</classifier>
+                        </configuration>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+        <!-- Profile for macOS-specific configurations -->
+        <profile>
+            <id>mac-profile</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <file>
+                    <exists>${java.home}/../lib/tools.jar</exists>
+                </file>
+            </activation>
+            <properties>
+                <toolsjar>${java.home}/../lib/tools.jar</toolsjar>
+            </properties>
+        </profile>
+        <!-- Profile for release-specific configurations -->
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Profile for signing artifacts during release -->
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>false</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+</project>

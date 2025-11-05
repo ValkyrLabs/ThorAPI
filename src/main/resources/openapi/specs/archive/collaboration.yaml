@@ -1,0 +1,10 @@
+paths:
+  /collaboration:
+    post:
+      summary: Start a new collaboration session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/collaboration.yaml#/Collaboration'

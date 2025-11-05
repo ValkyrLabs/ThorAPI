@@ -1,0 +1,21 @@
+# not sure it can be used from Maven in any case
+
+
+templateDir: src/main/resources/templates
+additionalProperties:
+  artifactId: valkyrai-api
+  serializableModel: "true"
+  dateLibrary: java8
+files:
+  JavaSpring/modelSave.mustache:
+    destinationFilename: CHECKADDEDFILE.java
+    templateType: SupportingFiles
+
+# other patterns
+  # AUTHORS.md: {}
+  # api_interfaces.mustache:
+  #  templateType: API
+  #  destinationFilename: Interface.kt
+  # api.mustache:
+  #  templateType: API
+  #  destinationFilename: Impl.kt

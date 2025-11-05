@@ -1,0 +1,319 @@
+openapi: 3.0.1
+info:
+  title: Digital Products Pro Bundle
+  description: Enhanced digital products system with landing pages, folder packaging, analytics, marketing automation, and AI-powered funnel generation
+  version: 1.1.0
+
+paths: {}
+
+x-valkyrai-dependencies:
+  - contentdata.yaml
+
+components:
+  schemas:
+    ProductLandingPage:
+      type: object
+      description: Custom landing page for a product with conversion optimization features
+      x-valkyrai-service: microservice
+      properties:
+        productId:
+          type: string
+          format: uuid
+        templateId:
+          type: string
+          description: Template identifier
+          enum:
+            - hero-video
+            - countdown-sale
+            - testimonial-heavy
+            - minimal-clean
+            - urgency-driven
+        config:
+          type: object
+          description: JSON configuration for sections and components
+          additionalProperties: true
+          example:
+            sections:
+              - type: hero
+                order: 1
+                config:
+                  headline: "Master React in 30 Days"
+                  subheadline: "Complete video course + exercises"
+                  videoUrl: "https://..."
+                  ctaText: "Get Started Now"
+              - type: countdown
+                order: 2
+                config:
+                  endDate: "2025-12-31T23:59:59Z"
+                  urgencyText: "Limited Time Offer Ends In"
+              - type: pricing
+                order: 3
+                config:
+                  originalPrice: 199
+                  salePrice: 99
+                  savings: "Save $100!"
+        slug:
+          type: string
+          description: URL-friendly slug (unique)
+          pattern: "^[a-z0-9-]+$"
+          maxLength: 255
+        seoTitle:
+          type: string
+          maxLength: 255
+        seoDescription:
+          type: string
+          maxLength: 1000
+        seoKeywords:
+          type: string
+          maxLength: 500
+        ogImageUrl:
+          type: string
+          format: uri
+        isPublished:
+          type: boolean
+          default: false
+        publishedAt:
+          type: string
+          format: date-time
+        product:
+          $ref: "products.yaml#/components/schemas/Product"
+      required:
+        - productId
+        - templateId
+        - slug
+
+    ProductFolder:
+      type: object
+      description: Virtual folder for organizing product files
+      x-valkyrai-service: microservice
+      properties:
+        productId:
+          type: string
+          format: uuid
+        folderPath:
+          type: string
+          description: Virtual path (e.g., /assets/v1/)
+          maxLength: 1024
+        fileCount:
+          type: integer
+          default: 0
+        totalSizeBytes:
+          type: integer
+          format: int64
+          default: 0
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        lastModifiedDate:
+          type: string
+          format: date-time
+          description: Date of last object modification
+        files:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductFolderFile"
+      required:
+        - productId
+        - folderPath
+
+    ProductFolderFile:
+      type: object
+      description: File within a product folder
+      x-valkyrai-service: microservice
+      properties:
+        folderId:
+          type: string
+          format: uuid
+        fileId:
+          type: string
+          format: uuid
+        relativePath:
+          type: string
+          description: Path within folder (e.g., docs/README.md)
+          maxLength: 512
+        isLicenseFile:
+          type: boolean
+          default: false
+        lastModifiedDate:
+          type: string
+          format: date-time
+          description: Date of last object modification
+        file:
+          $ref: "files.yaml#/components/schemas/FileRecord"
+      required:
+        - folderId
+        - fileId
+        - relativePath
+
+    ProductAnalyticsEvent:
+      type: object
+      description: Analytics event for product tracking
+      x-valkyrai-service: microservice
+      properties:
+        productId:
+          type: string
+          format: uuid
+        eventType:
+          type: string
+          description: Type of event
+          enum:
+            - view
+            - add_to_cart
+            - purchase
+            - download
+            - share
+            - review
+            - refund
+        principalId:
+          type: string
+          format: uuid
+          nullable: true
+        sessionId:
+          type: string
+          nullable: true
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Event-specific metadata
+          example:
+            source: landing_page
+            utm_campaign: summer_sale
+            referrer: https://google.com
+        lastModifiedDate:
+          type: string
+          format: date-time
+          description: Date of last object modification
+      required:
+        - productId
+        - eventType
+
+    ProductAnalyticsReport:
+      type: object
+      description: Aggregated analytics report for a product
+      x-valkyrai-service: microservice
+      properties:
+        productId:
+          type: string
+          format: uuid
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        totalViews:
+          type: integer
+          format: int64
+        totalAddToCart:
+          type: integer
+          format: int64
+        totalPurchases:
+          type: integer
+          format: int64
+        totalDownloads:
+          type: integer
+          format: int64
+        totalRevenue:
+          type: number
+          format: double
+        conversionRates:
+          type: object
+          properties:
+            viewToCart:
+              type: number
+              format: double
+              description: Percentage (0-100)
+            cartToPurchase:
+              type: number
+              format: double
+            purchaseToDownload:
+              type: number
+              format: double
+        topReferrers:
+          type: array
+          items:
+            type: object
+            properties:
+              referrer:
+                type: string
+              count:
+                type: integer
+        dailyStats:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+              views:
+                type: integer
+              purchases:
+                type: integer
+              revenue:
+                type: number
+
+    ProductAccessEntry:
+      type: object
+      description: User access information for a product
+      x-valkyrai-service: microservice
+      properties:
+        productId:
+          type: string
+          format: uuid
+        principalId:
+          type: string
+          format: uuid
+        assignedRole:
+          type: string
+          description: SHARE role name (e.g., ROLE_SHARE_PRODUCT_ABC)
+        grantedAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+        downloadCount:
+          type: integer
+          default: 0
+        maxDownloads:
+          type: integer
+          default: -1
+          description: -1 = unlimited
+        revokedAt:
+          type: string
+          format: date-time
+          nullable: true
+        revokedReason:
+          type: string
+          nullable: true
+        lastModifiedDate:
+          type: string
+          format: date-time
+          description: Date of last object modification
+        principal:
+          $ref: "auth.yaml#/components/schemas/Principal"
+
+    ProductDownloadAccess:
+      type: object
+      description: Individual download access record
+      x-valkyrai-service: microservice
+      properties:
+        accessEntryId:
+          type: string
+          format: uuid
+        downloadedAt:
+          type: string
+          format: date-time
+        ipAddress:
+          type: string
+        userAgent:
+          type: string
+        lastModifiedDate:
+          type: string
+          format: date-time
+          description: Date of last object modification

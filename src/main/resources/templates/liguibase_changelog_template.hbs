@@ -1,0 +1,80 @@
+databaseChangeLog:
+- preConditions:
+- runningAs:
+    username:  liquibase
+
+- changeSet:
+    id:  1
+    author:  your.name
+    labels: example-label
+    context: example-context
+    comment: example-comment
+    changes:
+    - createTable:
+    tableName:  person
+    columns:
+    - column:
+    name:  id
+    type:  int
+    autoIncrement:  true
+    constraints:
+    primaryKey:  true
+    nullable:  false
+    - column:
+    name:  name
+    type:  varchar(50)
+    constraints:
+    nullable:  false
+    - column:
+    name:  address1
+    type:  varchar(50)
+    - column:
+    name:  address2
+    type:  varchar(50)
+    - column:
+    name:  city
+    type:  varchar(30)
+
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+
+    {{#each schemas as |schema key|}}
+        <changeSet id="create_{{key}}" author="thorapi-generator">
+            <createTable tableName="{{key}}">
+                <column name="id" type="char(36)">
+                    <constraints primaryKey="true" nullable="false"/>
+                    <defaultValueComputed>UUID()</defaultValueComputed>
+                </column>
+                <column name="create_date" type="timestamp">
+                    <constraints nullable="false"/>
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                </column>
+                <column name="modify_date" type="timestamp">
+                    <constraints nullable="false"/>
+                    <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+                    <valueComputed>ON UPDATE CURRENT_TIMESTAMP</valueComputed>
+                </column>
+                <column name="last_modified_by" type="char(36)">
+                    <constraints nullable="false"/>
+                </column>
+                {{#each schema.properties as |item key| }}
+
+
+
+                    <column name="{{key}}" type="{{mapType item.type}}">
+
+                        {{#if item.required}}
+                            <constraints nullable="false"/>
+                        {{else}}
+                            <constraints nullable="true"/>
+                        {{/if}}
+                    </column>
+                {{/each}}
+            </createTable>
+        </changeSet>
+    {{/each}}
+</databaseChangeLog>

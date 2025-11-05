@@ -1,0 +1,58 @@
+openapi: 3.0.3
+info:
+  title: "My Chat Completion API"
+  version: "1.0.0"
+
+paths:
+  /v1/chat/completions:
+    post:
+      summary: "Create a Chat Completion"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatCompletionRequest"
+      responses:
+        "200":
+          description: "A successful response"
+
+components:
+  schemas:
+
+    ChatCompletionRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: "The model to use for generating Chat completions (e.g. 'gpt-4')."
+        prompt:
+          type: string
+          nullable: true
+          description: "Optional older parameter sometimes used in non-Chat contexts."
+        messages:
+          type: array
+          description: "Array of role-based messages to control the conversation."
+          items:
+            $ref: "#/components/schemas/ChatMessage"
+        stream:
+          type: boolean
+          default: false
+          description: "Whether to stream partial results. Usually false."
+      required:
+        - model
+        - messages
+
+    ChatMessage:
+      type: object
+      properties:
+        role:
+          type: string
+          description: "The role of the message sender."
+          enum: [system, user, assistant]
+        content:
+          type: string
+          description: "The textual content of the message."
+      required:
+        - role
+        - content

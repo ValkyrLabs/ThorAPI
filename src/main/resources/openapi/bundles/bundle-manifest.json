@@ -1,0 +1,307 @@
+{
+  "version": "1.0.0",
+  "name": "ThorAPI Bundle Manifest",
+  "description": "Defines all available ThorAPI bundles for the Application Builder",
+  "bundles": [
+    {
+      "id": "core",
+      "name": "Core",
+      "description": "Identity, RBAC, User Preferences, Organization, Address",
+      "category": "foundation",
+      "color": "primary",
+      "icon": "🔐",
+      "required": true,
+      "specFile": "core.yaml",
+      "dependencies": [],
+      "provides": [
+        "Principal",
+        "Authority",
+        "UserPreferences",
+        "Organization",
+        "Address",
+        "RBAC"
+      ],
+      "tags": [
+        "identity",
+        "security",
+        "rbac",
+        "foundation"
+      ],
+      "maturity": "stable",
+      "version": "2.1.0"
+    },
+    {
+      "id": "ecommerce",
+      "name": "Ecommerce",
+      "description": "Product catalog, orders, line items, invoices, categories, tags",
+      "category": "business",
+      "color": "success",
+      "icon": "🛍️",
+      "required": false,
+      "specFile": "ecommerce.yaml",
+      "dependencies": [
+        "core"
+      ],
+      "provides": [
+        "Product",
+        "SalesOrder",
+        "Lineitem",
+        "Invoice",
+        "Category",
+        "Tag"
+      ],
+      "components": [
+        "ProductTable",
+        "ProductDetail",
+        "EcommerceBundleDemo"
+      ],
+      "tags": [
+        "ecommerce",
+        "products",
+        "orders",
+        "catalog"
+      ],
+      "maturity": "stable",
+      "version": "1.8.0"
+    },
+    {
+      "id": "rating",
+      "name": "Rating",
+      "description": "Product ratings, CSAT, AI fine-tuning feedback",
+      "category": "engagement",
+      "color": "warning",
+      "icon": "⭐",
+      "required": false,
+      "specFile": "rating.yaml",
+      "dependencies": [
+        "core"
+      ],
+      "provides": [
+        "Rating",
+        "ProductRating",
+        "CSATRating",
+        "AIFeedback"
+      ],
+      "components": [
+        "RatingComponent"
+      ],
+      "tags": [
+        "ratings",
+        "feedback",
+        "csat",
+        "ai-training"
+      ],
+      "maturity": "stable",
+      "version": "1.5.0"
+    },
+    {
+      "id": "marcomm",
+      "name": "Marcomm",
+      "description": "Content, email automation, agentic tasks, event logs",
+      "category": "marketing",
+      "color": "info",
+      "icon": "📧",
+      "required": false,
+      "specFile": "marcomm.yaml",
+      "dependencies": [
+        "core"
+      ],
+      "provides": [
+        "ContentData",
+        "EmailTemplate",
+        "AgentTask",
+        "EventLog",
+        "Campaign"
+      ],
+      "tags": [
+        "marketing",
+        "content",
+        "automation",
+        "agents"
+      ],
+      "maturity": "stable",
+      "version": "1.3.0"
+    },
+    {
+      "id": "admin",
+      "name": "Admin",
+      "description": "Dashboard, usage meters, admin tools (all RBAC-aware)",
+      "category": "system",
+      "color": "secondary",
+      "icon": "⚙️",
+      "required": false,
+      "specFile": "admin.yaml",
+      "dependencies": [
+        "core"
+      ],
+      "provides": [
+        "Dashboard",
+        "UsageMeter",
+        "SystemConfig",
+        "AuditLog",
+        "AdminTool"
+      ],
+      "tags": [
+        "admin",
+        "dashboard",
+        "monitoring",
+        "configuration"
+      ],
+      "maturity": "stable",
+      "version": "1.2.0"
+    },
+    {
+      "id": "docusaurus-site",
+      "name": "Docusaurus Site",
+      "description": "Ready-to-use Docusaurus documentation site template",
+      "category": "documentation",
+      "color": "dark",
+      "icon": "📚",
+      "required": false,
+      "specFile": "docusaurus-site.yaml",
+      "dependencies": [],
+      "provides": [
+        "DocusaurusConfig",
+        "DocumentationSite",
+        "MarkdownTemplate",
+        "SiteNavigation"
+      ],
+      "tags": [
+        "documentation",
+        "docusaurus",
+        "markdown",
+        "static-site"
+      ],
+      "maturity": "beta",
+      "version": "0.9.0"
+    },
+    {
+      "id": "digital-products-pro",
+      "name": "Digital Products Pro",
+      "description": "Advanced digital products with landing pages, folder packaging, analytics, and marketing automation",
+      "category": "business",
+      "color": "purple",
+      "icon": "🚀",
+      "required": false,
+      "specFile": "digital-products-pro.yaml",
+      "dependencies": [
+        "core",
+        "ecommerce"
+      ],
+      "provides": [
+        "ProductLandingPage",
+        "ProductFolder",
+        "ProductFolderFile",
+        "ProductAnalyticsEvent",
+        "ProductAnalyticsReport",
+        "ProductAccessEntry"
+      ],
+      "components": [
+        "ProductLandingPageBuilder",
+        "CountdownTimer",
+        "ProductFolderManager",
+        "ProductAccessManager",
+        "AnalyticsDashboard"
+      ],
+      "tags": [
+        "digital-products",
+        "landing-pages",
+        "analytics",
+        "marketing",
+        "conversion-optimization"
+      ],
+      "maturity": "stable",
+      "version": "1.0.0"
+    }
+  ],
+  "categories": {
+    "foundation": {
+      "name": "Foundation",
+      "description": "Core system functionality and security",
+      "priority": 1
+    },
+    "business": {
+      "name": "Business Logic",
+      "description": "Domain-specific business functionality",
+      "priority": 2
+    },
+    "engagement": {
+      "name": "User Engagement",
+      "description": "Features that enhance user interaction and feedback",
+      "priority": 3
+    },
+    "marketing": {
+      "name": "Marketing & Content",
+      "description": "Content management and marketing automation",
+      "priority": 4
+    },
+    "system": {
+      "name": "System Administration",
+      "description": "Administrative and monitoring capabilities",
+      "priority": 5
+    },
+    "documentation": {
+      "name": "Documentation",
+      "description": "Documentation generation and site templates",
+      "priority": 6
+    }
+  },
+  "presets": {
+    "minimal": {
+      "name": "Minimal App",
+      "description": "Just the essentials - core identity and basic functionality",
+      "bundles": [
+        "core"
+      ]
+    },
+    "ecommerce-starter": {
+      "name": "Ecommerce Starter",
+      "description": "Complete ecommerce solution with ratings and digital products",
+      "bundles": [
+        "core",
+        "ecommerce",
+        "rating",
+        "digital-products-pro"
+      ]
+    },
+    "content-platform": {
+      "name": "Content Platform",
+      "description": "Content management with marketing automation",
+      "bundles": [
+        "core",
+        "marcomm",
+        "rating"
+      ]
+    },
+    "enterprise": {
+      "name": "Enterprise Suite",
+      "description": "Full-featured enterprise application with all capabilities",
+      "bundles": [
+        "core",
+        "ecommerce",
+        "rating",
+        "marcomm",
+        "admin",
+        "digital-products-pro"
+      ]
+    },
+    "documentation-site": {
+      "name": "Documentation Site",
+      "description": "Static documentation site with Docusaurus",
+      "bundles": [
+        "docusaurus-site"
+      ]
+    }
+  },
+  "metadata": {
+    "generatedBy": "ThorAPI Bundle System",
+    "generatedAt": "2025-09-20T21:00:00Z",
+    "schemaVersion": "1.0.0",
+    "compatibleWith": [
+      "ThorAPI >= 2.0",
+      "ValkyrAI >= 1.5"
+    ],
+    "author": "Valkyr Labs Inc",
+    "license": "Proprietary"
+  }
+}

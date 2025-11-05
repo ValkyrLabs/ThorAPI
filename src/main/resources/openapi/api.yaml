@@ -1,0 +1,85 @@
+openapi: 3.0.1
+
+info:
+  title: THORAPI CORE API
+
+  description: The API for accessing ValkyrAI services
+  termsOfService: https://valkyrlabs.com/tos/
+  contact:
+    email: info@valkyrlabs.com
+  license:
+    name: AGPL 3.0
+    url: https://www.gnu.org/licenses/agpl-3.0.html
+  version: 0.9.25
+
+externalDocs:
+  description: Learn more about ValkyrAI
+  url: https://valkyrlabs.com/vai/docs
+
+servers:
+  - url: http://localhost:8080/v1
+    description: local server (uses live data)
+  - url: https://valkyrlabs.com/v1
+    description: production server
+
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: users
+    description: Operations available to regular users
+  - name: spreadsheets
+    description: Pertaining to spreadsheets operations
+paths:
+
+## Valkyr LABS API
+components:
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the object to retrieve.
+      schema:
+        type: string
+        format: uuid
+
+  schemas:
+    ## SecureField KMS - the ultimate encryption solution
+    SecureKey:
+
+    ## Basic Section
+    Principal:
+    Role:
+
+    ## SWARM Multi-Agent System
+    # Agent:
+
+    ## Spring Security ACL - MUST be in FK dependency order
+    AclClass:
+    AclSid:
+    AclObjectIdentity:
+    AclEntry:
+
+    Login:
+    Logout:
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+    thorapi_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://{username}.valkyrlabs.com:{port}/oauth
+          scopes:
+            write:items: modify owned items
+            read:items: read owned items
+
+    api_key:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://valkyrlabs.com/auth
+          scopes: {}

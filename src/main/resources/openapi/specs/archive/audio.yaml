@@ -1,0 +1,9 @@
+    post:
+      summary: Upload an audio file
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '../components/audio.yaml#/Audio'

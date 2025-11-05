@@ -1,0 +1,9 @@
+    get:
+      summary: Get user details
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '../components/user.yaml#/User'

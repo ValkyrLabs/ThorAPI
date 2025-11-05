@@ -1,0 +1,66 @@
+openapi: 3.0.1
+info:
+  title: Valkyr Admin Bundle
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+
+    ## Dashboard - admin dashboard
+    Dashboard:
+      type: object
+      required:
+        - title
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        widgets:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminTool'
+        createdAt:
+          type: string
+          format: date-time
+
+    ## UsageMeter - usage and analytics
+    UsageMeter:
+      type: object
+      required:
+        - metric
+        - value
+      properties:
+        id:
+          type: string
+          format: uuid
+        metric:
+          type: string
+        value:
+          type: number
+          format: double
+        period:
+          type: string
+          enum: [hour, day, week, month, year]
+        recordedAt:
+          type: string
+          format: date-time
+
+    ## AdminTool - admin widgets/tools
+    AdminTool:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum: [usagemeter, usermgmt, auditlog, settings, custom]
+        config:
+          type: string
+          description: JSON config for the tool/widget

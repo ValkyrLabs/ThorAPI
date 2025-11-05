@@ -1,0 +1,51 @@
+openapi: 3.0.3
+info:
+  title: ThorUX Conditional UI API
+  version: 1.0.0
+paths:
+  /config/ui:
+    get:
+      summary: Get UI configuration based on user role
+      responses:
+        '200':
+          description: Successfully retrieved UI configuration based on user role
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/AdminUIConfig'
+                  - $ref: '#/components/schemas/RegularUIConfig'
+components:
+  schemas:
+    AdminUIConfig:
+      type: object
+      properties:
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/ComplexComponent'
+    RegularUIConfig:
+      type: object
+      properties:
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/SimpleComponent'
+    ComplexComponent:
+      type: object
+      properties:
+        type:
+          type: string
+        options:
+          type: array
+          items:
+            type: string
+    SimpleComponent:
+      type: object
+      properties:
+        type:
+          type: string
+        options:
+          type: array
+          items:
+            type: string

@@ -1,0 +1,56 @@
+{
+    "id": "1cdd4331-a410-4e29-b987-30f3502a01fb",
+    "firstName": "Karena",
+    "middleName": "Jane",
+    "lastName": "Harmony",
+    "userName": "Sparky",
+    "password": "HardToGuess1980",
+    "federalIdentification": "111-22-3333",
+    "residenceCountry": "USA",
+    "stateIdentification": "3333333333",
+    "residenceState": "CA",
+    "email": "wiley.coyote@acme-corp.com",
+    "social": "https://twitter.com/ValkyrAI",
+    "bio": "https://twitter.com/ValkyrAI",
+    "avatar_url": "https://img.com/mypic.png",
+    "organizationId": "1cdd4331-a410-4e29-b987-30f3502a01fc",
+    "organization": {
+      "id": "1cdd4331-a410-4e29-b987-30f3502a01fc",
+      "name": "ACME Corp Inc.",
+      "homePage": "https://www.acme-corp.com",
+      "phone": "415-867-5309",
+      "addressId": "1cdd4331-a410-4e29-b987-30f3502a01fd",
+      "address": {
+        "id": "1cdd4331-a410-4e29-b987-30f3502a01fd",
+        "userId": "1cdd4331-a410-4e29-b987-30f3502a01fb",
+        "addressType": "home",
+        "name": "Henry Johnson",
+        "street1": "123 Daydream Blvd.",
+        "street2": "Apt. 7",
+        "city": "San Francisco",
+        "state": "CA",
+        "country": "str",
+        "postal_code": "94210-0000"
+      }
+    },
+    "addresses": [
+      {
+        "id": "1cdd4331-a410-4e29-b987-30f3502a01fe",
+        "userId": "1cdd4331-a410-4e29-b987-30f3502a01fb",
+        "addressType": "home",
+        "name": "Henry Johnson",
+        "street1": "123 Daydream Blvd.",
+        "street2": "Apt. 7",
+        "city": "San Francisco",
+        "state": "CA",
+        "country": "str",
+        "postal_code": "94210-0000"
+      }
+    ],
+    "enabled": true,
+    "credentialNonExpired": true,
+    "accountEnabled": true,
+    "accountNonLocked": true,
+    "accountNonExpired": true
+    
+  }

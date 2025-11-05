@@ -1,0 +1,47 @@
+package com.valkyrlabs.thorapi.securefield;
+
+/* ##LICENSE## */
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+/**
+ * Annotation to enable security on a field.
+ *
+ * We leverage the Spring Security encryption utils for password encryption
+ *	https://docs.spring.io/spring-security/site/docs/4.2.11.RELEASE/apidocs/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.html
+ *
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
+ * @see http://docs.valkyrlabs.com/docs/security/secure-field.html
+ */
+public @interface SecureField {
+
+	public enum EncryptionType {
+		SYMMETRIC, HASHED, HYBRID_SYMMETRIC_HASHED, PKI
+	}
+
+	// strength for HASHED (passwords) the log rounds to use,
+	// between 4 and 31
+	// for SYMMETRICAL this is 256 or 512
+
+	EncryptionType encryptionType() default EncryptionType.SYMMETRIC;
+
+	// encrypt only capability - decryption methods
+	// are no generated (you must decrypt manually)
+	boolean canDecrypt() default true;
+	
+	// whether to bypass security
+	/**
+	 * <p>enabled.</p>
+	 *
+	 * @return a boolean
+	 */
+	public boolean enabled() default true;
+
+	int strength() default 10;
+
+}

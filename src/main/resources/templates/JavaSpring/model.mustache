@@ -1,0 +1,101 @@
+package {{package}};
+
+import java.net.URI;
+import java.util.Objects;
+
+import jakarta.persistence.FetchType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.transaction.annotation.Transactional;
+import com.valkyrlabs.thorapi.audit.AuditedField;
+import com.valkyrlabs.thorapi.audit.AuditedClass;
+import com.valkyrlabs.thorapi.audit.AuditingField;
+import com.valkyrlabs.thorapi.data.DataField;
+
+import com.valkyrlabs.thorapi.securefield.SecureField;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Index;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Transient;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import org.hibernate.annotations.ColumnTransformer;
+import java.util.UUID;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedAttributeNode;
+
+{{#imports}}import {{import}};
+{{/imports}}
+{{#openApiNullable}}
+import org.openapitools.jackson.nullable.JsonNullable;
+{{/openApiNullable}}
+{{#serializableModel}}
+import java.io.Serializable;
+{{/serializableModel}}
+import java.time.OffsetDateTime;
+{{#useBeanValidation}}
+import {{javaxPackage}}.validation.Valid;
+import {{javaxPackage}}.validation.constraints.*;
+{{/useBeanValidation}}
+{{^useBeanValidation}}
+import {{javaxPackage}}.validation.constraints.NotNull;
+{{/useBeanValidation}}
+{{#performBeanValidation}}
+
+{{/performBeanValidation}}
+{{#jackson}}
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+{{#withXml}}
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+{{/withXml}}
+{{/jackson}}
+{{#swagger2AnnotationLibrary}}
+import io.swagger.v3.oas.annotations.media.Schema;
+{{/swagger2AnnotationLibrary}}
+
+{{#withXml}}
+import {{javaxPackage}}.xml.bind.annotation.*;
+{{/withXml}}
+{{^parent}}
+{{#hateoas}}
+import org.springframework.hateoas.RepresentationModel;
+{{/hateoas}}
+{{/parent}}
+
+import java.util.*;
+import {{javaxPackage}}.annotation.Generated;
+
+{{#models}}
+{{#model}}
+{{#additionalPropertiesType}}
+import java.util.Map;
+import java.util.HashMap;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+{{/additionalPropertiesType}}
+{{#isEnum}}
+{{>enumOuterClass}}
+{{/isEnum}}
+{{^isEnum}}
+{{#vendorExtensions.x-is-one-of-interface}}{{>oneof_interface}}{{/vendorExtensions.x-is-one-of-interface}}{{^vendorExtensions.x-is-one-of-interface}}{{>pojo}}{{/vendorExtensions.x-is-one-of-interface}}
+{{/isEnum}}
+{{/model}}
+{{/models}}

@@ -1,0 +1,7 @@
+Audio:
+  type: object
+  properties:
+    id:
+      type: string
+    filename:
+      type: string
