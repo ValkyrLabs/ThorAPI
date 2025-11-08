@@ -178,7 +178,7 @@ thorapi.enhancers DefaultEnhancer Custom enhancement chain
 ⸻
 
 🛡️ License
-• Core engine and templates are Apache License 2.0.
+• Core engine and templates are AGPL 3.0.
 • Generated code is MIT Licensed (you own what you generate).
 • Advanced key management and workflow integration available under ValkyrAI Commercial License.
 
