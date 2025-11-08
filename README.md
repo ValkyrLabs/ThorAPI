@@ -1,22 +1,12 @@
 # ⚡️ ThorAPI — Deterministic Code Generation for Sovereign Systems
-
-
-
-# ThorAPI — Badges & Logos (Copy/Paste)
-
-> Drop these right under the `# ThorAPI` heading in your README. All are Shields.io badges using official logos where available.
-
----
-
-## 🧰 Core Project Badges
-
-[![Build](https://img.shields.io/github/actions/workflow/status/valkyrlabs/thorapi/ci.yml?branch=main&label=Build&logo=githubactions)](https://github.com/valkyrlabs/thorapi/actions)
-[![Release](https://img.shields.io/github/v/release/valkyrlabs/thorapi?display_name=release&logo=semanticrelease&label=Release)](https://github.com/valkyrlabs/thorapi/releases)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue?logo=apache)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Build](https://img.shields.io/github/actions/workflow/status/ValkyrLabs/ThorAPI/ci.yml?branch=main&label=Build&logo=githubactions)](https://github.com/ValkyrLabs/ThorAPI/actions)
+[![Release](https://img.shields.io/github/v/release/ValkyrLabs/ThorAPI?display_name=release&logo=semanticrelease&label=Release)](https://github.com/valkyrlabs/thorapi/releases)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg?logo=gnu)](https://www.gnu.org/licenses/agpl-3.0)
 [![Generated Code License](https://img.shields.io/badge/generated%20code-MIT-green?logo=open-source-initiative)](./LICENSE)
 [![Conventional Commits](https://img.shields.io/badge/commits-conventional-ff69b4?logo=conventionalcommits)](https://www.conventionalcommits.org/en/v1.0.0/)
 
 ThorAPI turns OpenAPI specs into secure, production-ready backend services and client SDKs.
+
 It’s the open-source backbone of Valkyr Labs’ “Reverse SaaS” architecture — where developers own the code, the data, and the keys.
 
 ⸻
